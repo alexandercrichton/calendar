@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Calendar";
+}
+
+<h2>Chat</h2>
+
+<div class="container">
+    <input type="text" id="message" />
+    <input type="button" id="sendmessage" value="Send" />
+    <input type="hidden" id="displayname" />
+    <ul id="discussion"></ul>
+</div>
+
+<div id="calendar"></div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <link rel='stylesheet' href="~/Content/fullcalendar.css" />
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/fullcalendar.js"></script>
+    <script>
+        $(function () {
+
+            var hub = $.connection.calendarHub;
+            var split = document.URL.split('/');
+            var id = split[split.length - 1];
+            $.connection.hub.qs = "id=" + id;
+
+            $.connection.hub.start().done(function () {
+                hub.server.joinGroup(id);
+                calendar = new FullCalendar('calendar', hub);
+            });
+
+            hub.client.addEvent = function (start, end) {
+                var event = {
+                    title: '',
+                    start: start,
+                    end: end
+                };
+                calendar.renderEvent(event);
+            }
+        });
+
+
+    </script>
+
+    <script>
+        var calendar;
+        function initialiseCalendar(hub) {
+
+        };
+
+        function FullCalendar(id, hub) {
+            var self = this;
+            self.element = $('#' + id);
+
+            self.renderEvent = function (event) {
+                self.element.fullCalendar('renderEvent', event);
+            };
+
+            $(document).ready(function () {
+
+                self.element.fullCalendar({
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    defaultDate: '2015-02-12',
+                    editable: true,
+                    eventLimit: true, // allow "more" link when too many events
+                    events: function (start, end, timezone, callback) {
+                        callback(
+                            [
+                                {
+                                    title: 'All Day Event',
+                                    start: '2015-02-01'
+                                },
+                                {
+                                    title: 'Long Event',
+                                    start: '2015-02-07',
+                                    end: '2015-02-10'
+                                }
+                            ]);
+                    },
+                    selectable: true,
+                    selectHelper: true,
+                    select: function (start, end, jsEvent) {
+                        if (jsEvent) {
+                            hub.server.addEvent(start, end);
+                            var event = {
+                                title: '',
+                                start: start,
+                                end: end
+                            };
+                            self.renderEvent(event);
+                        }
+                    },
+                });
+            });
+        }
+    </script>
+}
