@@ -30,10 +30,15 @@ namespace SignalRChat.Hubs
             Clients.Others.NewSelection(start, null);
         }
 
-        public async Task AddEvent(string start, string end)
+        public async Task AddEvent(string id, string start, string end)
         {
-            Clients.OthersInGroup(HttpContext.Current.Request.QueryString["id"])
-                .AddEvent(start, end);
+            Clients.OthersInCurrentGroup().AddEvent(id, start, end);
+            //Clients.OthersInCurrentGroup().AddEvent(start, end);
+            //Clients.Others.AddEvent(start, end);
+        }
+        public async Task RemoveEvent(string id)
+        {
+            Clients.OthersInCurrentGroup().RemoveEvent(id);
             //Clients.OthersInCurrentGroup().AddEvent(start, end);
             //Clients.Others.AddEvent(start, end);
         }

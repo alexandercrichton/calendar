@@ -33,13 +33,18 @@
                 calendar = new FullCalendar('calendar', hub);
             });
 
-            hub.client.addEvent = function (start, end) {
+            hub.client.addEvent = function (id, start, end) {
                 var event = {
+                    id: id,
                     title: '',
                     start: start,
                     end: end
                 };
                 calendar.renderEvent(event);
+            };
+            hub.client.removeEvent = function (id) {
+                calendar.removeEvent(id);
+                calendar.rerenderEvents();
             }
         });
 
@@ -47,9 +52,18 @@
     </script>
 
     <script>
+        function newGuid() {
+            var d = new Date().getTime();
+            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = (d + Math.random() * 16) % 16 | 0;
+                d = Math.floor(d / 16);
+                return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+            return uuid;
+        }
+
         var calendar;
         function initialiseCalendar(hub) {
-
         };
 
         function FullCalendar(id, hub) {
@@ -59,6 +73,17 @@
             self.renderEvent = function (event) {
                 self.element.fullCalendar('renderEvent', event);
             };
+
+            self.removeEvent = function (id) {
+                self.element.fullCalendar('removeEvents', id);
+                $('.fc-event').filter(function () {
+                    return $(this).attr('fc-id') == id
+                }).parent().remove()
+            };
+
+            self.rerenderEvents = function () {
+                self.element.fullCalendar('rerenderEvents');
+            }
 
             $(document).ready(function () {
 
@@ -81,20 +106,35 @@
                                 {
                                     title: 'Long Event',
                                     start: '2015-02-07',
-                                    end: '2015-02-10'
+                                    end: '2015-02-10',
+                                    rendering: 'background'
                                 }
                             ]);
                     },
                     selectable: true,
                     selectHelper: true,
+                    eventClick: function (event, jsEvent, view) {
+                        hub.server.removeEvent(event.id);
+                        self.removeEvent(event.id);
+                    },
+                    eventDestroy: function (event, element, view) {
+
+                    },
+                    eventRender: function (event, element, view) {
+                        element.attr('fc-id', event.id);
+                    },
+                    //dayClick: function (date, jsEvent, view) {
+                    //    $(this).css('background-color', 'red');
+                    //}
                     select: function (start, end, jsEvent) {
                         if (jsEvent) {
-                            hub.server.addEvent(start, end);
                             var event = {
+                                id: newGuid(),
                                 title: '',
                                 start: start,
                                 end: end
                             };
+                            hub.server.addEvent(event.id, event.start, event.end);
                             self.renderEvent(event);
                         }
                     },

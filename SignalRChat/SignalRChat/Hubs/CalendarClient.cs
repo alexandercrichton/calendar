@@ -14,6 +14,7 @@ namespace SignalRChat.Hubs
 
         void DayClicked(string date);
 
-        void AddEvent(string start, string end);
+        void AddEvent(string id, string start, string end);
+        void RemoveEvent(string id);
     }
 }
