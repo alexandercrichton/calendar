@@ -38,7 +38,8 @@
                     id: id,
                     title: '',
                     start: start,
-                    end: end
+                    end: end,
+                    other: true
                 };
                 calendar.renderEvent(event);
             };
@@ -70,15 +71,21 @@
             var self = this;
             self.element = $('#' + id);
 
+            self.getEvents = function(){
+                return self.element.fullCalendar('clientEvents');
+            };
+
             self.renderEvent = function (event) {
                 self.element.fullCalendar('renderEvent', event);
             };
 
             self.removeEvent = function (id) {
-                self.element.fullCalendar('removeEvents', id);
-                $('.fc-event').filter(function () {
+                var el = $('.fc-event').filter(function () {
                     return $(this).attr('fc-id') == id
-                }).parent().remove()
+                });
+                el.css('color', 'red');
+                el.parent().remove()
+                self.element.fullCalendar('removeEvents', id);
             };
 
             self.rerenderEvents = function () {
@@ -122,10 +129,16 @@
                     },
                     eventRender: function (event, element, view) {
                         element.attr('fc-id', event.id);
+                        if (event.other) {
+                            element.css('background-color', 'red');
+                        }
                     },
                     //dayClick: function (date, jsEvent, view) {
                     //    $(this).css('background-color', 'red');
                     //}
+                    eventAfterAllRender: function(){
+                        var events = self.getEvents();
+                    },
                     select: function (start, end, jsEvent) {
                         if (jsEvent) {
                             var event = {
