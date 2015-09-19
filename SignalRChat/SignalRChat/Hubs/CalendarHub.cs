@@ -15,14 +15,9 @@ namespace SignalRChat.Hubs
             Groups.Add(Context.ConnectionId, groupName);
         }
 
-        public async Task Send(string name, string message)
+        public async Task SendMessage(string name, string message)
         {
-            Clients.All.NewMessage(name, message);
-        }
-
-        public async Task SendSelection(string start, string end)
-        {
-            Clients.Others.NewSelection(start, end);
+            Clients.OthersInCurrentGroup().AddMessage(name, message);
         }
 
         public async Task DayClicked(string start)
