@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Calendar.Data;
+using Calendar.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -22,8 +24,7 @@ namespace SignalRChat.Controllers
 
         public ActionResult Create()
         {
-            var i = new Random().Next(0, 1000);
-            return RedirectToAction("Index", "Calendar").WithQuery("id", i.ToString());
+            return RedirectToAction("Index", "Calendar").WithQuery("id", Guid.NewGuid().ToString());
         }
     }
 }

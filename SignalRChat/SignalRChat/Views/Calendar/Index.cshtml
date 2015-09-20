@@ -7,12 +7,16 @@
     <div id="calendar" style="float:left; width:80%"></div>
 
     <div class="container" style="float: left; width:20%">
-        <h2>Chat</h2>
         
+        <h2>Users</h2>
+        <ul id="users"></ul>
+
+        <h2>Chat</h2>
+
         <ul id="discussion"></ul>
         <div>
             <input type="text" id="message" />
-            <input type="text" id="displayname" style="width:50%"/>
+            <input type="text" id="displayname" style="width:50%" />
             <input type="button" id="sendmessage" style="width:50%" value="Send" />
         </div>
     </div>
@@ -25,165 +29,34 @@
     <link rel='stylesheet' href="~/Content/fullcalendar.css" />
     <script src="~/Scripts/moment.min.js"></script>
     <script src="~/Scripts/fullcalendar.js"></script>
+    <script src="~/Scripts/Core.js"></script>
+
     <script>
-        $(function () {
+
+        var calendar;
+        var chat;
+        var userManager;
+
+        $(document).ready(function () {
 
             var hub = $.connection.calendarHub;
             var split = document.URL.split('/');
             var id = split[split.length - 1];
             $.connection.hub.qs = "id=" + id;
 
-            calendar = new FullCalendar('calendar', hub);
-            chat = new Chat(hub, $('#displayname'), $('#message'),
+            userManager = new UserManager(hub, $('#users'));
+            calendar = new FullCalendar(hub, $('#calendar'));
+            chat = new Chat(hub, userManager, $('#displayname'), $('#message'),
                 $('#sendmessage'), $('#discussion'));
 
+
             $.connection.hub.start().done(function () {
-                hub.server.joinGroup(id);
+                var name = prompt('Enter user name', 'username');
+                hub.server.joinGroup(name, id);
             });
+
         });
 
 
-    </script>
-
-    <script>
-        function newGuid() {
-            var d = new Date().getTime();
-            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                var r = (d + Math.random() * 16) % 16 | 0;
-                d = Math.floor(d / 16);
-                return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-            });
-            return uuid;
-        }
-
-        var calendar;
-        var chat;
-
-        function Chat(hub, nameField, messageField, sendButton, discussionList) {
-            var self = this;
-            self.nameField = nameField;
-            self.messageField = messageField;
-            self.sendButton = sendButton;
-            self.discussionList = discussionList;
-
-            self.sendButton.on('click', function () {
-                var name = nameField.val();
-                var message = messageField.val();
-                hub.server.sendMessage(name, message);
-                self.addMessage(name, message)
-            });
-
-            self.addMessage = function (name, message) {
-                discussionList.append('<li><strong>' + name + '</strong>' + message + '</li>');
-            };
-
-            hub.client.addMessage = function (name, message) {
-                chat.addMessage(name, message);
-            };            
-        };
-
-        function FullCalendar(id, hub) {
-            var self = this;
-            self.element = $('#' + id);
-
-            self.getEvents = function () {
-                return self.element.fullCalendar('clientEvents');
-            };
-
-            self.renderEvent = function (event) {
-                self.element.fullCalendar('renderEvent', event);
-            };
-
-            self.removeEvent = function (id) {
-                var el = $('.fc-event').filter(function () {
-                    return $(this).attr('fc-id') == id
-                });
-                el.css('color', 'red');
-                el.parent().remove()
-                self.element.fullCalendar('removeEvents', id);
-            };
-
-            self.rerenderEvents = function () {
-                self.element.fullCalendar('rerenderEvents');
-            };
-
-            hub.client.addEvent = function (id, start, end) {
-                var event = {
-                    id: id,
-                    title: '',
-                    start: start,
-                    end: end,
-                    other: true
-                };
-                self.renderEvent(event);
-            };
-
-            hub.client.removeEvent = function (id) {
-                calendar.removeEvent(id);
-                calendar.rerenderEvents();
-            };
-
-            $(document).ready(function () {
-
-                self.element.fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    defaultDate: '2015-02-12',
-                    editable: true,
-                    eventLimit: true, // allow "more" link when too many events
-                    events: function (start, end, timezone, callback) {
-                        callback(
-                            [
-                                {
-                                    title: 'All Day Event',
-                                    start: '2015-02-01'
-                                },
-                                {
-                                    title: 'Long Event',
-                                    start: '2015-02-07',
-                                    end: '2015-02-10',
-                                    rendering: 'background'
-                                }
-                            ]);
-                    },
-                    selectable: true,
-                    selectHelper: true,
-                    eventClick: function (event, jsEvent, view) {
-                        hub.server.removeEvent(event.id);
-                        self.removeEvent(event.id);
-                    },
-                    eventDestroy: function (event, element, view) {
-
-                    },
-                    eventRender: function (event, element, view) {
-                        element.attr('fc-id', event.id);
-                        if (event.other) {
-                            element.css('background-color', 'red');
-                        }
-                    },
-                    //dayClick: function (date, jsEvent, view) {
-                    //    $(this).css('background-color', 'red');
-                    //}
-                    eventAfterAllRender: function () {
-                        var events = self.getEvents();
-                    },
-                    select: function (start, end, jsEvent) {
-                        if (jsEvent) {
-                            var event = {
-                                id: newGuid(),
-                                title: '',
-                                start: start,
-                                end: end
-                            };
-                            hub.server.addEvent(event.id, event.start, event.end);
-                            self.renderEvent(event);
-                        }
-                    }
-                });
-            });
-        }
     </script>
 }
