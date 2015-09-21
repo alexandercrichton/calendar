@@ -45,11 +45,11 @@
             $.connection.hub.qs = "id=" + id;
 
             userManager = new UserManager(hub, $('#users'));
-            calendar = new FullCalendar(hub, $('#calendar'));
+            calendar = new FullCalendar(hub, userManager, $('#calendar'));
             chat = new Chat(hub, userManager, $('#displayname'), $('#message'),
                 $('#sendmessage'), $('#discussion'));
 
-
+            $.connection.hub.logging = true;
             $.connection.hub.start().done(function () {
                 var name = prompt('Enter user name', 'username');
                 hub.server.joinGroup(name, id);

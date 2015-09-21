@@ -108,10 +108,11 @@ function Chat(hub, userManager, nameField, messageField, sendButton, discussionL
     };
 };
 
-function FullCalendar(hub, element) {
+function FullCalendar(hub, userManager, element) {
     var self = this;
     self.element = element;
     self.hub = hub;
+    self.userManager = userManager;
 
     self.getEvents = function () {
         return self.element.fullCalendar('clientEvents');
@@ -134,13 +135,13 @@ function FullCalendar(hub, element) {
         self.element.fullCalendar('rerenderEvents');
     };
 
-    self.hub.client.addEvent = function (id, start, end) {
+    self.hub.client.addEvent = function (id, userGuid, start, end) {
         var event = {
             id: id,
+            userGuid: userGuid,
             title: '',
             start: start,
-            end: end,
-            other: true
+            end: end
         };
         self.renderEvent(event);
     };
@@ -158,22 +159,7 @@ function FullCalendar(hub, element) {
         },
         defaultDate: '2015-02-12',
         editable: true,
-        eventLimit: true, // allow "more" link when too many events
-        events: function (start, end, timezone, callback) {
-            callback(
-                [
-                    {
-                        title: 'All Day Event',
-                        start: '2015-02-01'
-                    },
-                    {
-                        title: 'Long Event',
-                        start: '2015-02-07',
-                        end: '2015-02-10',
-                        rendering: 'background'
-                    }
-                ]);
-        },
+        eventLimit: true,
         selectable: true,
         selectHelper: true,
         eventClick: function (event, jsEvent, view) {
@@ -182,19 +168,20 @@ function FullCalendar(hub, element) {
         },
         eventRender: function (event, element, view) {
             element.attr('fc-id', event.id);
-            if (event.other) {
+            if (event.userGuid != userManager.currentUser.UserGuid) {
                 element.css('background-color', 'red');
             }
         },
         select: function (start, end, jsEvent) {
             if (jsEvent) {
                 var event = {
-                    id: newGuid(),
+                    id: core.newGuid(),
+                    userGuid: userManager.currentUser.UserGuid,
                     title: '',
                     start: start,
                     end: end
                 };
-                self.hub.server.addEvent(event.id, event.start, event.end);
+                self.hub.server.addEvent(event.id, event.userGuid, event.start, event.end);
                 self.renderEvent(event);
             }
         }

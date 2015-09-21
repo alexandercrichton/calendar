@@ -20,9 +20,9 @@ namespace SignalRChat.Hubs
             Db = new CalendarContext();
         }
 
-        public void JoinGroup(string userName, string groupGuid)
+        public void JoinGroup(string userName, Guid groupGuid)
         {
-            Groups.Add(Context.ConnectionId, groupGuid);
+            Groups.Add(Context.ConnectionId, groupGuid.ToString());
 
             var user = new User
             {
@@ -33,7 +33,7 @@ namespace SignalRChat.Hubs
 
             var userGroup = new UserGroup
             {
-                GroupGuid = Guid.Parse(groupGuid),
+                GroupGuid = Guid.Parse(groupGuid.ToString()),
                 UserGuid = user.UserGuid
             };
             Db.UserGroups.Add(userGroup);
@@ -57,17 +57,7 @@ namespace SignalRChat.Hubs
             Clients.Caller.AddUsers(usersInGroup);
         }
 
-        public async Task RegisterAsUser(string id, string name)
-        {
-            var user = new User
-            {
-                UserGuid = Guid.Parse(id),
-                Name = name
-            };
-            Clients.OthersInCurrentGroup().AddUser(user);
-        }
-
-        public async Task SendMessage(string userGuid, string message)
+        public async Task SendMessage(Guid userGuid, string message)
         {
             Clients.OthersInCurrentGroup().AddMessage(userGuid, message);
         }
@@ -77,22 +67,14 @@ namespace SignalRChat.Hubs
             Clients.Others.NewSelection(start, null);
         }
 
-        public async Task AddEvent(string id, string start, string end)
+        public async Task AddEvent(Guid eventGuid, Guid userGuid, string start, string end)
         {
-            Clients.OthersInCurrentGroup().AddEvent(id, start, end);
-            //Clients.OthersInCurrentGroup().AddEvent(start, end);
-            //Clients.Others.AddEvent(start, end);
-        }
-        public async Task RemoveEvent(string id)
-        {
-            Clients.OthersInCurrentGroup().RemoveEvent(id);
-            //Clients.OthersInCurrentGroup().AddEvent(start, end);
-            //Clients.Others.AddEvent(start, end);
+            Clients.OthersInCurrentGroup().AddEvent(eventGuid, userGuid, start, end);
         }
 
-        protected string GetGroupFromCurrentRequest()
+        public async Task RemoveEvent(Guid eventGuid)
         {
-            return HttpContext.Current.Request.QueryString["id"];
+            Clients.OthersInCurrentGroup().RemoveEvent(eventGuid);
         }
     }
 

@@ -12,13 +12,13 @@ namespace SignalRChat.Hubs
         void AddUser(User user);
         void AddUsers(IEnumerable<User> users);
 
-        void AddMessage(string userGuid, string message);
+        void AddMessage(Guid userGuid, string message);
 
         void NewSelection(string start, string end);
 
         void DayClicked(string date);
 
-        void AddEvent(string id, string start, string end);
-        void RemoveEvent(string id);
+        void AddEvent(Guid eventId, Guid userGuid, string start, string end);
+        void RemoveEvent(Guid eventId);
     }
 }
