@@ -1,14 +1,4 @@
-﻿var core = {
-    newGuid: function () {
-        var d = new Date().getTime();
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-        return uuid;
-    }
-};
+﻿
 
 function User(userGuid, name) {
     var self = this;
@@ -35,10 +25,7 @@ function UserManager(hub, userList) {
 
     self.addUser = function (user) {
         self.users.push(user);
-        self.userList.empty();
-        for (var i = 0; i < self.users.length; i++) {
-            self.userList.append('<li>' + self.users[i].Name + '</li>');
-        }
+        self.renderUserList();
     };
 
     self.hub.client.addUser = function (user) {
@@ -58,9 +45,25 @@ function UserManager(hub, userList) {
         self.addUsers(users);
     };
 
-    self.removeUser = function (userGuid) {
-
+    self.renderUserList = function () {
+        self.userList.empty();
+        for (var i = 0; i < self.users.length; i++) {
+            self.userList.append('<li>' + self.users[i].Name + '</li>');
+        }
     };
+
+    self.removeUser = function (userGuid) {
+        self.users = self.users.filter(function (user) {
+            return user.UserGuid != userGuid;
+        });
+        self.renderUserList();
+
+        if (self.onUserRemoved) {
+            self.onUserRemoved();
+        }
+    };
+
+    self.onUserRemoved = null;
 
     self.getUser = function (userGuid) {
         for (var i = 0; i < self.users.length; i++) {
@@ -78,6 +81,12 @@ function UserManager(hub, userList) {
                 self.users[i].Name = name;
             }
         }
+    };
+
+    self.hub.client.userDisconnected = function (userGuid) {
+        var user = self.getUser(userGuid);
+        self.removeUser(user.UserGuid);
+
     };
 };
 
@@ -114,6 +123,12 @@ function FullCalendar(hub, userManager, element) {
     self.hub = hub;
     self.userManager = userManager;
 
+    userManager.onUserRemoved = core.wrap(userManager.onUserRemoved, function () {
+        var events = self.getEvents().filter(function (event) {
+            return event
+        });
+    });
+
     self.getEvents = function () {
         return self.element.fullCalendar('clientEvents');
     };
@@ -123,12 +138,18 @@ function FullCalendar(hub, userManager, element) {
     };
 
     self.removeEvent = function (id) {
-        var el = $('.fc-event').filter(function () {
-            return $(this).attr('fc-id') == id
-        });
-        el.css('color', 'red');
-        el.parent().remove()
         self.element.fullCalendar('removeEvents', id);
+    };
+
+    self.removeEvents = function (ids) {
+        self.element.fullCalendar('removeEvents', function(event) {
+            for (var i = 0; i < ids.length; i++) {
+                if (event.id == ids[i]) {
+                    return true;
+                }
+            }
+            return false;
+        });
     };
 
     self.rerenderEvents = function () {
@@ -163,8 +184,10 @@ function FullCalendar(hub, userManager, element) {
         selectable: true,
         selectHelper: true,
         eventClick: function (event, jsEvent, view) {
-            self.hub.server.removeEvent(event.id);
-            self.removeEvent(event.id);
+            if (event.userGuid == userManager.currentUser.UserGuid) {
+                self.hub.server.removeEvent(event.id);
+                self.removeEvent(event.id);
+            }
         },
         eventRender: function (event, element, view) {
             element.attr('fc-id', event.id);
@@ -187,3 +210,27 @@ function FullCalendar(hub, userManager, element) {
         }
     });
 }
+
+var core = {
+    newGuid: function () {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    },
+    wrap: function (first, second) {
+        if (typeof first == 'function') {
+            return function () {
+                first();
+                second();
+            };
+        } else {
+            return function () {
+                second();
+            };
+        }
+    }
+};

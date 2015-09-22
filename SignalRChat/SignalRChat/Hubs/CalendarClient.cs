@@ -20,5 +20,7 @@ namespace SignalRChat.Hubs
 
         void AddEvent(Guid eventId, Guid userGuid, string start, string end);
         void RemoveEvent(Guid eventId);
+
+        void UserDisconnected(Guid userGuid);
     }
 }

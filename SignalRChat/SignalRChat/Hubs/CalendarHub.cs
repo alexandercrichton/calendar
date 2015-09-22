@@ -55,6 +55,13 @@ namespace SignalRChat.Hubs
 
             Clients.Caller.SetCurrentUser(user);
             Clients.Caller.AddUsers(usersInGroup);
+
+            Db.UserConnections.Add(new UserConnection
+            {
+                UserGuid = user.UserGuid,
+                ConnectionId = Guid.Parse(Context.ConnectionId)
+            });
+            Db.SaveChanges();
         }
 
         public async Task SendMessage(Guid userGuid, string message)
@@ -75,6 +82,21 @@ namespace SignalRChat.Hubs
         public async Task RemoveEvent(Guid eventGuid)
         {
             Clients.OthersInCurrentGroup().RemoveEvent(eventGuid);
+        }
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            var group = Context.QueryString["id"];
+            var guid = Guid.Parse(Context.ConnectionId);
+            var userConnection = Db.UserConnections
+                .FirstOrDefault(uc => uc.ConnectionId == guid);
+
+            Clients.OthersInGroup(group).UserDisconnected(userConnection.UserGuid);
+
+            Db.UserConnections.Remove(userConnection);
+            Db.SaveChanges();
+
+            return base.OnDisconnected(stopCalled);
         }
     }
 

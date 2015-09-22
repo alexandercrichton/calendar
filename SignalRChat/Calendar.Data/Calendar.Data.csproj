@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="CalendarContext.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserConnection.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
