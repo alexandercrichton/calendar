@@ -58,12 +58,16 @@ function UserManager(hub, userList) {
         });
         self.renderUserList();
 
-        if (self.onUserRemoved) {
-            self.onUserRemoved();
+        if (self.onUserRemovedCallbacks && $.isArray(self.onUserRemovedCallbacks)) {
+            for (var i = 0; i < self.onUserRemovedCallbacks.length; i++) {
+                if (typeof self.onUserRemovedCallbacks[i] == 'function') {
+                    self.onUserRemovedCallbacks[i](userGuid);
+                }
+            }
         }
     };
 
-    self.onUserRemoved = null;
+    self.onUserRemovedCallbacks = [];
 
     self.getUser = function (userGuid) {
         for (var i = 0; i < self.users.length; i++) {
@@ -123,12 +127,6 @@ function FullCalendar(hub, userManager, element) {
     self.hub = hub;
     self.userManager = userManager;
 
-    userManager.onUserRemoved = core.wrap(userManager.onUserRemoved, function () {
-        var events = self.getEvents().filter(function (event) {
-            return event
-        });
-    });
-
     self.getEvents = function () {
         return self.element.fullCalendar('clientEvents');
     };
@@ -142,7 +140,7 @@ function FullCalendar(hub, userManager, element) {
     };
 
     self.removeEvents = function (ids) {
-        self.element.fullCalendar('removeEvents', function(event) {
+        self.element.fullCalendar('removeEvents', function (event) {
             for (var i = 0; i < ids.length; i++) {
                 if (event.id == ids[i]) {
                     return true;
@@ -151,6 +149,16 @@ function FullCalendar(hub, userManager, element) {
             return false;
         });
     };
+
+    userManager.onUserRemovedCallbacks.push(function (removedUserGuid) {
+        var events = self.getEvents().filter(function (event) {
+            return event.userGuid == removedUserGuid;
+        });
+        var eventIds = events.map(function (e) {
+            return e.id;
+        });
+        self.removeEvents(eventIds);
+    });
 
     self.rerenderEvents = function () {
         self.element.fullCalendar('rerenderEvents');
