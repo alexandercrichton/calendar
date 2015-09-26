@@ -1,26 +1,30 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyCalendar.Data.Models
 {
-    public class User
+    public class CalendarEvent
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid CalendarEventGuid { get; set; }
+
+        public Guid CalendarGuid { get; set; }
+
         public Guid UserGuid { get; set; }
+
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime? EndDateTime { get; set; }
 
         public string Name { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<UserConnection> UserConnections { get; set; }
+        public virtual Calendar Calendar { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<CalendarEvent> CalendarEvents { get; set; }
+        public virtual User User { get; set; }
     }
 }

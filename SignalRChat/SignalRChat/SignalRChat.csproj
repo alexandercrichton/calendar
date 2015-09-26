@@ -26,7 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>1.5</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.6</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -225,9 +225,9 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Calendar.Data\Calendar.Data.csproj">
+    <ProjectReference Include="..\Calendar.Data\MyCalendar.Data.csproj">
       <Project>{65cd23db-40c4-4d7b-9387-bd2a1f742d76}</Project>
-      <Name>Calendar.Data</Name>
+      <Name>MyCalendar.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

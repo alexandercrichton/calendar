@@ -1,5 +1,5 @@
-﻿using Calendar.Data;
-using Calendar.Data.Models;
+﻿using MyCalendar.Data;
+using MyCalendar.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,13 @@ namespace SignalRChat.Controllers
 {
     public class CalendarController : Controller
     {
+        protected CalendarContext Db { get; set; }
+
+        public CalendarController()
+        {
+            Db = new CalendarContext();
+        }
+
         // GET: Calendar
         public ActionResult Index(string id)
         {
@@ -24,7 +31,14 @@ namespace SignalRChat.Controllers
 
         public ActionResult Create()
         {
-            return RedirectToAction("Index", "Calendar").WithQuery("id", Guid.NewGuid().ToString());
+            var calendar = new Calendar
+            {
+                Name = string.Empty
+            };
+            Db.Calendars.Add(calendar);
+            Db.SaveChanges();
+
+            return RedirectToAction("Index", "Calendar").WithQuery("id", calendar.CalendarGuid.ToString());
         }
     }
 }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace MyCalendar.Data.Models
 {
-    public class User
+    public class Calendar
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserGuid { get; set; }
+        public Guid CalendarGuid { get; set; }
 
         public string Name { get; set; }
 

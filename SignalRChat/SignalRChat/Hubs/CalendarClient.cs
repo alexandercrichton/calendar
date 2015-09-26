@@ -1,4 +1,4 @@
-﻿using Calendar.Data.Models;
+﻿using MyCalendar.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

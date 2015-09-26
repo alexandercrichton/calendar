@@ -6,8 +6,8 @@ using Microsoft.AspNet.SignalR;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Hubs;
 using System.Web.SessionState;
-using Calendar.Data;
-using Calendar.Data.Models;
+using MyCalendar.Data;
+using MyCalendar.Data.Models;
 
 namespace SignalRChat.Hubs
 {
@@ -15,58 +15,52 @@ namespace SignalRChat.Hubs
     {
         protected CalendarContext Db { get; set; }
 
+        protected Guid CurrentCalendarGuid
+        {
+            get { return Guid.Parse(Context.QueryString["id"]); }
+        }
+
         public CalendarHub()
         {
             Db = new CalendarContext();
         }
 
-        public void JoinGroup(string userName, Guid groupGuid)
+        public void ConnectToCalendar(string userName, Guid calendarGuid)
         {
-            Groups.Add(Context.ConnectionId, groupGuid.ToString());
+            Groups.Add(Context.ConnectionId, calendarGuid.ToString());
 
             var user = new User
             {
                 Name = userName
             };
             Db.Users.Add(user);
-            Db.SaveChanges();
-
-            var userGroup = new UserGroup
-            {
-                GroupGuid = Guid.Parse(groupGuid.ToString()),
-                UserGuid = user.UserGuid
-            };
-            Db.UserGroups.Add(userGroup);
 
             Db.SaveChanges();
 
-            Clients.OthersInCurrentGroup().AddUser(user);
+            Clients.OthersInCurrentCalendar().AddUser(user);
 
-            var usersInGroup = Db.Users
-                 .Join(Db.UserGroups,
-                     u => u.UserGuid,
-                     ug => ug.UserGuid,
-                     (u, ug) => new { u, ug })
-                 .ToList()
-                 .Where(a => a.ug.GroupGuid == userGroup.GroupGuid
-                     && a.u.UserGuid != user.UserGuid)
-                 .Select(a => a.u)
-                 .ToList();
+            var calendarUsers = Db.Users
+                .Where(u => u.UserConnections
+                    .Any(uc => uc.CalendarGuid == calendarGuid))
+                .ToList();
 
             Clients.Caller.SetCurrentUser(user);
-            Clients.Caller.AddUsers(usersInGroup);
+            Clients.Caller.AddUsers(calendarUsers);
 
-            Db.UserConnections.Add(new UserConnection
+            var userConnection = new UserConnection
             {
-                UserGuid = user.UserGuid,
-                ConnectionId = Guid.Parse(Context.ConnectionId)
-            });
+                CalendarGuid = calendarGuid,
+                ConnectionId = Guid.Parse(Context.ConnectionId),
+                UserGuid = user.UserGuid
+            };
+            Db.UserConnections.Add(userConnection);
+
             Db.SaveChanges();
         }
 
         public async Task SendMessage(Guid userGuid, string message)
         {
-            Clients.OthersInCurrentGroup().AddMessage(userGuid, message);
+            Clients.OthersInCurrentCalendar().AddMessage(userGuid, message);
         }
 
         public async Task DayClicked(string start)
@@ -76,12 +70,30 @@ namespace SignalRChat.Hubs
 
         public async Task AddEvent(Guid eventGuid, Guid userGuid, string start, string end)
         {
-            Clients.OthersInCurrentGroup().AddEvent(eventGuid, userGuid, start, end);
+            Clients.OthersInCurrentCalendar().AddEvent(eventGuid, userGuid, start, end);
+
+            DateTime d;
+            DateTime? endDate = null;
+            if (DateTime.TryParse(end, out d))
+            {
+                endDate = d;
+            }
+
+            Db.CalendarEvents.Add(new CalendarEvent
+            {
+                CalendarEventGuid = eventGuid,
+                CalendarGuid = CurrentCalendarGuid,
+                UserGuid = userGuid,
+                Name = string.Empty,
+                StartDateTime = DateTime.Parse(start),
+                EndDateTime = endDate
+            });
+            Db.SaveChanges();
         }
 
         public async Task RemoveEvent(Guid eventGuid)
         {
-            Clients.OthersInCurrentGroup().RemoveEvent(eventGuid);
+            Clients.OthersInCurrentCalendar().RemoveEvent(eventGuid);
         }
 
         public override Task OnDisconnected(bool stopCalled)
@@ -102,10 +114,10 @@ namespace SignalRChat.Hubs
 
     public static class HubExtensions
     {
-        public static T OthersInCurrentGroup<T>(this IHubCallerConnectionContext<T> hub)
+        public static T OthersInCurrentCalendar<T>(this IHubCallerConnectionContext<T> hub)
         {
-            var group = HttpContext.Current.Request.QueryString["id"];
-            return hub.OthersInGroup(group);
+            var calendarGuid = HttpContext.Current.Request.QueryString["id"];
+            return hub.OthersInGroup(calendarGuid);
         }
     }
 }

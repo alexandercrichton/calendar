@@ -52,7 +52,7 @@
             $.connection.hub.logging = true;
             $.connection.hub.start().done(function () {
                 var name = prompt('Enter user name', 'username');
-                hub.server.joinGroup(name, id);
+                hub.server.connectToCalendar(name, id);
             });
 
         });
