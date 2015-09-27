@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNet.SignalR;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using System.Web.SessionState;
 using MyCalendar.Data;
 using MyCalendar.Data.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace SignalRChat.Hubs
 {
@@ -56,6 +54,12 @@ namespace SignalRChat.Hubs
             Db.UserConnections.Add(userConnection);
 
             Db.SaveChanges();
+
+            var userCalendarEvents = calendarUsers
+                .SelectMany(cu => cu.CalendarEvents)
+                .ToList();
+
+            Clients.Caller.AddExistingEvents(userCalendarEvents);
         }
 
         public async Task SendMessage(Guid userGuid, string message)
@@ -68,27 +72,18 @@ namespace SignalRChat.Hubs
             Clients.Others.NewSelection(start, null);
         }
 
-        public async Task AddEvent(Guid eventGuid, Guid userGuid, string start, string end)
+        public async Task AddEvent(CalendarEvent calendarEvent)
         {
-            Clients.OthersInCurrentCalendar().AddEvent(eventGuid, userGuid, start, end);
+            Clients.OthersInCurrentCalendar().AddEvent(calendarEvent);
 
-            DateTime d;
-            DateTime? endDate = null;
-            if (DateTime.TryParse(end, out d))
-            {
-                endDate = d;
-            }
+            Db.CalendarEvents.Add(calendarEvent);
 
-            Db.CalendarEvents.Add(new CalendarEvent
-            {
-                CalendarEventGuid = eventGuid,
-                CalendarGuid = CurrentCalendarGuid,
-                UserGuid = userGuid,
-                Name = string.Empty,
-                StartDateTime = DateTime.Parse(start),
-                EndDateTime = endDate
-            });
             Db.SaveChanges();
+        }
+
+        public async Task UpdateEvent(CalendarEvent calendarEvent)
+        {
+            Clients.OthersInCurrentCalendar().UpdateEvent(calendarEvent);
         }
 
         public async Task RemoveEvent(Guid eventGuid)
@@ -109,6 +104,12 @@ namespace SignalRChat.Hubs
             Db.SaveChanges();
 
             return base.OnDisconnected(stopCalled);
+        }
+
+        protected class FullCalendarEvent
+        {
+            public string id { get; set; }
+
         }
     }
 

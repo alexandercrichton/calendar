@@ -18,7 +18,9 @@ namespace SignalRChat.Hubs
 
         void DayClicked(string date);
 
-        void AddEvent(Guid eventId, Guid userGuid, string start, string end);
+        void AddEvent(CalendarEvent calendarEvent);
+        void AddExistingEvents(IEnumerable<CalendarEvent> events);
+        void UpdateEvent(CalendarEvent calendarEvent);
         void RemoveEvent(Guid eventId);
 
         void UserDisconnected(Guid userGuid);

@@ -8,7 +8,6 @@ namespace MyCalendar.Data.Models
     public class CalendarEvent
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid CalendarEventGuid { get; set; }
 
         public Guid CalendarGuid { get; set; }
