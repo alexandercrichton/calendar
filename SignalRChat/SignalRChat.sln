@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRChat", "SignalRChat\SignalRChat.csproj", "{B9EB1196-9A5C-4CD7-9529-E878C101A161}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCalendar", "SignalRChat\MyCalendar.csproj", "{B9EB1196-9A5C-4CD7-9529-E878C101A161}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCalendar.Data", "Calendar.Data\MyCalendar.Data.csproj", "{65CD23DB-40C4-4D7B-9387-BD2A1F742D76}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCalendar.Common", "MyCalendar.Common\MyCalendar.Common.csproj", "{65CD23DB-40C4-4D7B-9387-BD2A1F742D76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

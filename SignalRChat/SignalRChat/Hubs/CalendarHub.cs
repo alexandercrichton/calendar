@@ -1,16 +1,32 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using MyCalendar.Data;
-using MyCalendar.Data.Models;
+using MyCalendar.Common;
+using MyCalendar.Common.Core;
+using MyCalendar.Common.Extensions;
+using MyCalendar.Common.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace SignalRChat.Hubs
+namespace MyCalendar.Hubs
 {
+    public static class HubExtensions
+    {
+        public static T OthersInCurrentCalendar<T>(this IHubCallerConnectionContext<T> hub)
+        {
+            var calendarGuid = HttpContext.Current.Request.QueryString["id"];
+            return hub.OthersInGroup(calendarGuid);
+        }
+    }
+
     public class CalendarHub : Hub<ICalendarClient>
     {
+        public CalendarHub()
+        {
+            Db = new CalendarContext();
+        }
+
         protected CalendarContext Db { get; set; }
 
         protected Guid CurrentCalendarGuid
@@ -18,48 +34,61 @@ namespace SignalRChat.Hubs
             get { return Guid.Parse(Context.QueryString["id"]); }
         }
 
-        public CalendarHub()
+        protected HttpRequest Request
         {
-            Db = new CalendarContext();
+            get { return HttpContext.Current.Request; }
         }
 
-        public void ConnectToCalendar(string userName, Guid calendarGuid)
+        protected HttpResponse Response
         {
-            Groups.Add(Context.ConnectionId, calendarGuid.ToString());
+            get { return HttpContext.Current.Response; }
+        }
 
-            var user = new User
-            {
-                Name = userName
-            };
-            Db.Users.Add(user);
+        protected int? CurrentUserId
+        {
+            get { return Request.Cookies[Constant.Cookie.MyCalendarUser].Value.ToInt(); }
+        }
 
-            Db.SaveChanges();
+        public bool ConnectToCalendar(int calendarId)
+        {
+            //if (CurrentUserId.HasValue)
+            //{
+            //    Groups.Add(Context.ConnectionId, calendarId.ToString());
 
-            Clients.OthersInCurrentCalendar().AddUser(user);
+            //    var user = Db.Users.FirstOrDefault(u => u.UserId == CurrentUserId.Value);
+            //    if (user != null)
+            //    {
+            //        Clients.OthersInCurrentCalendar().AddUser(user);
 
-            var calendarUsers = Db.Users
-                .Where(u => u.UserConnections
-                    .Any(uc => uc.CalendarGuid == calendarGuid))
-                .ToList();
+            //        var calendarUsers = Db.Users
+            //            .Where(u => u.UserConnections
+            //                .Any(uc => uc.CalendarGuid == calendarId))
+            //            .ToList();
 
-            Clients.Caller.SetCurrentUser(user);
-            Clients.Caller.AddUsers(calendarUsers);
+            //        Clients.Caller.SetCurrentUser(user);
+            //        Clients.Caller.AddUsers(calendarUsers);
 
-            var userConnection = new UserConnection
-            {
-                CalendarGuid = calendarGuid,
-                ConnectionId = Guid.Parse(Context.ConnectionId),
-                UserGuid = user.UserGuid
-            };
-            Db.UserConnections.Add(userConnection);
+            //        var userConnection = new UserConnection
+            //        {
+            //            CalendarGuid = calendarId,
+            //            ConnectionId = Guid.Parse(Context.ConnectionId),
+            //            UserGuid = user.UserGuid
+            //        };
+            //        Db.UserConnections.Add(userConnection);
 
-            Db.SaveChanges();
+            //        Db.SaveChanges();
 
-            var userCalendarEvents = calendarUsers
-                .SelectMany(cu => cu.CalendarEvents)
-                .ToList();
+            //        var userCalendarEvents = calendarUsers
+            //            .SelectMany(cu => cu.CalendarEvents)
+            //            .ToList();
 
-            Clients.Caller.AddExistingEvents(userCalendarEvents);
+            //        Clients.Caller.AddEvents(userCalendarEvents);
+
+            //        return true;
+            //    }
+            //}
+
+            return false;
         }
 
         public async Task SendMessage(Guid userGuid, string message)
@@ -67,23 +96,23 @@ namespace SignalRChat.Hubs
             Clients.OthersInCurrentCalendar().AddMessage(userGuid, message);
         }
 
-        public async Task DayClicked(string start)
-        {
-            Clients.Others.NewSelection(start, null);
-        }
-
-        public async Task AddEvent(CalendarEvent calendarEvent)
+        public async Task AddEvent(Event calendarEvent)
         {
             Clients.OthersInCurrentCalendar().AddEvent(calendarEvent);
 
-            Db.CalendarEvents.Add(calendarEvent);
+            Db.Events.Add(calendarEvent);
 
             Db.SaveChanges();
         }
 
-        public async Task UpdateEvent(CalendarEvent calendarEvent)
+        public async Task UpdateEvent(Event updatedCalendarEvent)
         {
-            Clients.OthersInCurrentCalendar().UpdateEvent(calendarEvent);
+            Clients.OthersInCurrentCalendar().UpdateEvent(updatedCalendarEvent);
+
+            var calendarEvent = Db.Events.FirstOrDefault(
+                ce => ce.EventId == updatedCalendarEvent.EventId);
+            Db.Entry(calendarEvent).CurrentValues.SetValues(updatedCalendarEvent);
+            await Db.SaveChangesAsync();
         }
 
         public async Task RemoveEvent(Guid eventGuid)
@@ -104,21 +133,6 @@ namespace SignalRChat.Hubs
             Db.SaveChanges();
 
             return base.OnDisconnected(stopCalled);
-        }
-
-        protected class FullCalendarEvent
-        {
-            public string id { get; set; }
-
-        }
-    }
-
-    public static class HubExtensions
-    {
-        public static T OthersInCurrentCalendar<T>(this IHubCallerConnectionContext<T> hub)
-        {
-            var calendarGuid = HttpContext.Current.Request.QueryString["id"];
-            return hub.OthersInGroup(calendarGuid);
         }
     }
 }

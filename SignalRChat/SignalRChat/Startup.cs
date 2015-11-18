@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using Owin;
 using Microsoft.Owin;
-[assembly: OwinStartup(typeof(SignalRChat.Startup))]
-namespace SignalRChat
+[assembly: OwinStartup(typeof(MyCalendar.Startup))]
+namespace MyCalendar
 {
     public partial class Startup
     {

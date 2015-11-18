@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net46": {
+      "wrappedProject": "../../MyCalendar.Common/MyCalendar.Common.csproj",
+      "bin": {
+        "assembly": "../../MyCalendar.Common/obj/{configuration}/Calendar.Data.dll",
+        "pdb": "../../MyCalendar.Common/obj/{configuration}/Calendar.Data.pdb"
+      },
+      "dependencies": {
+        "EntityFramework": "6.1.3",
+        "Newtonsoft.Json": "1.0.0-*"
+      }
+    }
+  }
+}

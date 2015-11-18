@@ -1,26 +1,25 @@
-﻿using MyCalendar.Data.Models;
+﻿using MyCalendar.Common.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace SignalRChat.Hubs
+namespace MyCalendar.Hubs
 {
     public interface ICalendarClient
     {
         void SetCurrentUser(User user);
+
         void AddUser(User user);
+
         void AddUsers(IEnumerable<User> users);
 
         void AddMessage(Guid userGuid, string message);
 
-        void NewSelection(string start, string end);
+        void AddEvent(Event calendarEvent);
 
-        void DayClicked(string date);
+        void AddEvents(IEnumerable<Event> events);
 
-        void AddEvent(CalendarEvent calendarEvent);
-        void AddExistingEvents(IEnumerable<CalendarEvent> events);
-        void UpdateEvent(CalendarEvent calendarEvent);
+        void UpdateEvent(Event calendarEvent);
+
         void RemoveEvent(Guid eventId);
 
         void UserDisconnected(Guid userGuid);

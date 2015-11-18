@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace SignalRChat
+namespace MyCalendar
 {
     public class FilterConfig
     {
