@@ -21,7 +21,7 @@
             return location.protocol + '//' + location.host;
         },
 
-        get: function(methodUri){
+        get: function (methodUri) {
             return $.ajax({
                 url: methodUri,
                 type: 'GET',
@@ -36,28 +36,6 @@
                 dataType: 'json',
                 data: postData
             });
-        }
-    },
-
-    user: {
-        registerUser: function (name, email, password) {
-            var registerModel = {
-                Name: name,
-                Email: email,
-                Password: password
-            };
-
-            core.http.post(registerModel, 'User/Register')
-                .done(function (data) {
-                    if (data) {
-                        alert(data);
-                        return true;
-                    }
-                })
-                .error(function (xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
-                    return false;
-                });
         }
     },
 
@@ -126,6 +104,27 @@
         //self.hub.client.setCurrentUser = function (user) {
         //    self.setCurrentUser(user);
         //};
+
+        self.registerUser = function (userId, name, email, password) {
+            var registerModel = {
+                UserId: userId,
+                Name: name,
+                Email: email,
+                Password: password
+            };
+
+            core.http.post(registerModel, 'User/Register')
+                .done(function (data) {
+                    if (data) {
+                        alert(data);
+                        return true;
+                    }
+                })
+                .error(function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                    return false;
+                });
+        };
 
         self.addUser = function (user) {
             self.users.push(user);
