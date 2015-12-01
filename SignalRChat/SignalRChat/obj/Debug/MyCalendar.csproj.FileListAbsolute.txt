@@ -79,3 +79,5 @@ C:\Dev\Calendar\SignalRChat\SignalRChat\bin\ru-ru\JavaScriptEngineSwitcher.V8.re
 C:\Dev\Calendar\SignalRChat\SignalRChat\bin\ru-ru\MsieJavaScriptEngine.resources.dll
 C:\Dev\Calendar\SignalRChat\SignalRChat\bin\AutoMapper.dll
 C:\Dev\Calendar\SignalRChat\SignalRChat\bin\AutoMapper.xml
+C:\Dev\Calendar\SignalRChat\SignalRChat\bin\System.Web.Optimization.React.dll
+C:\Dev\Calendar\SignalRChat\SignalRChat\bin\System.Web.Optimization.React.xml

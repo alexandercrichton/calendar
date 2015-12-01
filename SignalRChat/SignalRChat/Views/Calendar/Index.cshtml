@@ -1,113 +1,53 @@
 ﻿@{
     ViewBag.Title = "Calendar";
 }
-<div>
 
-    <div id="menu" style="float:left; width: 15%">
+<div id="reactTest"></div>
 
-        <div id="react"></div>
-
-        <div id="login">
-            <h3>Login</h3>
-            <div>
-                <label for="loginEmail">Email:</label>
-                <input id="loginEmail" type="text" />
-                <label for="loginPassword">Password:</label>
-                <input id="loginPassword" type="password" />
-                <button id="loginButton">Login</button>
-            </div>
-        </div>
-        <div id="register">
-            <h3>Register</h3>
-            <div>
-                <label for="registerName">Name:</label>
-                <input id="registerName" type="text" />
-                <label for="registerEmail">Email:</label>
-                <input id="registerEmail" type="text" />
-                <label for="registerPassword">Password:</label>
-                <input id="registerPassword" type="password" />
-                <label for="registerPasswordRepeat">Password:</label>
-                <input id="registerPasswordRepeat" type="password" />
-
-                <button id="registerButton">Register</button>
-            </div>
-        </div>
-        <div id="logout">
-            <h3>Logout</h3>
-            @using (Html.BeginForm("Logout", "User"))
-            {
-                <div>
-                    <input id="logoutButton" type="submit" value="Logout" />
-                </div>
-            }
-        </div>
-    </div>
-
-    <div id="calendar" style="float:left; width:65%"></div>
-
-    <div class="container" style="float: left; width:20%">
-
-        <h2>Users</h2>
-        <ul id="users"></ul>
-
-        <h2>Chat</h2>
-
-        <ul id="discussion"></ul>
-        <div>
-            <input type="text" id="message" />
-            <input type="text" id="displayname" style="width:50%" />
-            <input type="button" id="sendmessage" style="width:50%" value="Send" />
-        </div>
-    </div>
-    <div style="clear:both"></div>
-</div>
 @section scripts {
-    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
-    <script src="~/signalr/hubs"></script>
-    <link rel='stylesheet' href="~/Content/fullcalendar.css" />
-    <script src="~/Scripts/moment.min.js"></script>
-    <script src="~/Scripts/fullcalendar.js"></script>
-    <script src="~/Scripts/Core.js"></script>
 
     <script>
-        var calendar;
-        var chat;
-        var userManager;
 
-        $(document).ready(function () {
-            $('#registerButton').click(function (e) {
-                var name = $('#registerName').val();
-                var email = $('#registerEmail').val();
-                var password = $('#registerPassword').val();
-                core.user.registerUser(name, email, password);
-            });
 
-            //var hub = $.connection.calendarHub;
-            //var split = document.URL.split('/');
-            //var calendarGuid = split[split.length - 1];
-            //$.connection.hub.qs = "id=" + calendarGuid;
-            core.http.get('User/Current')
-                .done(function (data) {
-                    userManager = new core.UserManager($('#users'));
-                    userManager.setCurrentUser(data);
-                    calendar = new core.FullCalendar(userManager, $('#calendar'));
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
-            //chat = new core.Chat(hub, userManager, $('#displayname'), $('#message'),
-            //    $('#sendmessage'), $('#discussion'));
+        //var calendar;
+        //var chat;
+        //var userManager;
 
-            //$.connection.hub.logging = true;
-            //$.connection.hub.start().done(function () {
-            //    hub.server.connectToCalendar(calendarGuid).done(function (result) {
-            //        if (!result) {
-            //            alert('Failed connecting to calendar. Check user cookie');
-            //        }
-            //    });
-            //});
+        //$(document).ready(function () {
+        //    $('#registerButton').click(function (e) {
+        //        var name = $('#registerName').val();
+        //        var email = $('#registerEmail').val();
+        //        var password = $('#registerPassword').val();
+        //        var userId = userManager.currentUser.UserId;
+        //        core.user.registerUser(userId, name, email, password);
+        //    });
 
-        });
+        //    //var hub = $.connection.calendarHub;
+        //    //var split = document.URL.split('/');
+        //    //var calendarGuid = split[split.length - 1];
+        //    //$.connection.hub.qs = "id=" + calendarGuid;
+        //    core.http.get('User/Current')
+        //        .done(function (data) {
+        //            userManager = new core.UserManager($('#users'));
+        //            userManager.setCurrentUser(data);
+        //            calendar = new core.FullCalendar(userManager, $('#calendar'));
+        //        })
+        //        .fail(function (jqXHR, textStatus, errorThrown) {
+        //            console.log(textStatus);
+        //            console.log(errorThrown);
+        //        });
+        //    //chat = new core.Chat(hub, userManager, $('#displayname'), $('#message'),
+        //    //    $('#sendmessage'), $('#discussion'));
+
+        //    //$.connection.hub.logging = true;
+        //    //$.connection.hub.start().done(function () {
+        //    //    hub.server.connectToCalendar(calendarGuid).done(function (result) {
+        //    //        if (!result) {
+        //    //            alert('Failed connecting to calendar. Check user cookie');
+        //    //        }
+        //    //    });
+        //    //});
+
+        //});
     </script>
 }

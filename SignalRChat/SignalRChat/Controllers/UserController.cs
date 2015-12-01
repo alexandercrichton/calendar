@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MyCalendar.Common.Core;
+using MyCalendar.Common.Models;
 using SignalRChat.Controllers.Base;
 using SignalRChat.Models.User;
 using System;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -13,34 +13,35 @@ namespace SignalRChat.Controllers
     {
         public JsonResult Current()
         {
-            var user = Db.Users.FirstOrDefault(u => u.UserId == CurrentUserId);
-            var userModel = Mapper.Map<UserModel>(user);
-            var json = Json(userModel, JsonRequestBehavior.AllowGet);
-            return json;
+            if (CurrentUser != null)
+            {
+                var userModel = Mapper.Map<UserModel>(CurrentUser);
+                var json = Json(userModel, JsonRequestBehavior.AllowGet);
+                return json;
+            }
+
+            return null;
         }
 
         [HttpPost]
-        public bool Register(RegisterModel registerModel)
+        public JsonResult Register(RegisterModel registerModel)
         {
-            if (registerModel != null)
+            UserModel userModel = null;
+
+            if (registerModel != null && CurrentUser != null
+                && registerModel.UserId == CurrentUser.UserId && !CurrentUser.IsActive)
             {
-                if (CurrentUserId.HasValue)
                 {
-                    var user = Db.Users.FirstOrDefault(u => u.UserId == CurrentUserId);
-                    if (user != null)
-                    {
-                        user.Name = registerModel.Name;
-                        user.Password = registerModel.Password;
-                        user.IsActive = true;
+                    CurrentUser = Mapper.Map<User>(registerModel);
+                    CurrentUser.IsActive = true;
 
-                        Db.SaveChanges();
-                    }
+                    Db.SaveChanges();
+
+                    userModel = Mapper.Map<UserModel>(CurrentUser);
                 }
-
-                return true;
             }
 
-            return false;
+            return Json(userModel);
         }
 
         public ActionResult Logout()
@@ -55,11 +56,9 @@ namespace SignalRChat.Controllers
 
         public ActionResult Login(LoginViewModel loginModel)
         {
-            var user = Db.Users.FirstOrDefault(u => u.Email == loginModel.Email
-                && u.Password == loginModel.Password);
-            if (user != null)
+            if (CurrentUser?.Email == loginModel.Email && CurrentUser?.Password == loginModel.Password)
             {
-                var cookie = new HttpCookie(Constant.Cookie.MyCalendarUser, user.UserId.ToString());
+                var cookie = new HttpCookie(Constant.Cookie.MyCalendarUser, CurrentUser.UserId.ToString());
                 Response.Cookies.Set(cookie);
                 return RedirectToAction("Index", "Calendar");
             }

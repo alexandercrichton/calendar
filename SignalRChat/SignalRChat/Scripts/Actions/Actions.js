@@ -1,4 +1,4 @@
 ﻿var UserActions = Reflux.createActions([
-    'registerUser',
-    'testAction'
+    'getCurrentUser',
+    'register'
 ]);

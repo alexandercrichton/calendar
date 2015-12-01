@@ -40,6 +40,11 @@
             <see cref="P:React.BabelConfig.AllLoose"/> or <see cref="P:React.BabelConfig.Loose"/> can be used at a time.
             </summary>
         </member>
+        <member name="P:React.BabelConfig.Blacklist">
+            <summary>
+            Gets or sets the transformers to blacklist
+            </summary>
+        </member>
         <member name="P:React.BabelConfig.ExternalHelpers">
             <summary>
             Gets or sets whether Babel should use a reference to babelHelpers instead of placing
@@ -688,7 +693,7 @@
         </member>
         <member name="F:React.FileCacheHash._hash">
             <summary>
-            Althorithm for calculating file hashes
+            Algorithm for calculating file hashes
             </summary>
         </member>
         <member name="M:React.FileCacheHash.CalculateHash(System.String)">
@@ -1278,6 +1283,11 @@
             Whether this class has been disposed.
             </summary>
         </member>
+        <member name="F:React.JavaScriptEngineFactory._scriptLoadException">
+            <summary>
+            The exception that was thrown during the most recent recycle of the pool.
+            </summary>
+        </member>
         <member name="M:React.JavaScriptEngineFactory.#ctor(System.Collections.Generic.IEnumerable{React.JavaScriptEngineFactory.Registration},React.IReactSiteConfiguration,React.IFileSystem)">
             <summary>
             Initializes a new instance of the <see cref="T:React.JavaScriptEngineFactory"/> class.
@@ -1350,9 +1360,10 @@
             Clean up all engines
             </summary>
         </member>
-        <member name="M:React.JavaScriptEngineFactory.EnsureNotDisposed">
+        <member name="M:React.JavaScriptEngineFactory.EnsureValidState">
             <summary>
-            Ensures that this object has not been disposed.
+            Ensures that this object has not been disposed, and that no error was thrown while
+            loading the scripts.
             </summary>
         </member>
         <member name="T:React.JavaScriptEngineFactory.Registration">
@@ -1715,6 +1726,12 @@
         <member name="F:React.ReactEnvironment._components">
             <summary>
             List of all components instantiated in this environment
+            </summary>
+        </member>
+        <member name="P:React.ReactEnvironment.Current">
+            <summary>
+            Gets the <see cref="T:React.IReactEnvironment"/> for the current request. If no environment
+            has been created for the current request, creates a new one.
             </summary>
         </member>
         <member name="M:React.ReactEnvironment.#ctor(React.IJavaScriptEngineFactory,React.IReactSiteConfiguration,React.ICache,React.IFileSystem,React.IFileCacheHash)">

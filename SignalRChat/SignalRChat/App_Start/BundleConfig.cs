@@ -1,5 +1,5 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
+using System.Web.Optimization.React;
 
 namespace MyCalendar
 {
@@ -26,6 +26,13 @@ namespace MyCalendar
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/Actions")
+                .IncludeDirectory("~/Scripts/Actions", "*.js"));
+            bundles.Add(new BabelBundle("~/bundles/Components")
+                .IncludeDirectory("~/Scripts/Components", "*.jsx"));
+            bundles.Add(new ScriptBundle("~/bundles/Stores")
+                .IncludeDirectory("~/Scripts/Stores", "*.js"));
         }
     }
 }

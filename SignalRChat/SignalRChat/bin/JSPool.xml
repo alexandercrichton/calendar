@@ -488,6 +488,11 @@
             Lock object used when creating a new engine
             </summary>
         </member>
+        <member name="E:JSPool.JsPool.Recycled">
+            <summary>
+            Occurs when any watched files have changed (including renames and deletions).
+            </summary>
+        </member>
         <member name="M:JSPool.JsPool.#ctor(JSPool.JsPoolConfig)">
             <summary>
             Creates a new JavaScript engine pool

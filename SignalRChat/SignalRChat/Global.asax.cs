@@ -17,6 +17,8 @@ namespace MyCalendar
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             Mapper.CreateMap<User, UserModel>();
+            Mapper.CreateMap<RegisterModel, User>();
+            Mapper.CreateMap<User, RegisterModel>();
         }
     }
 }

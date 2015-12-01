@@ -1,153 +1,109 @@
 
-var TestComponent = React.createClass({
 
-    getInitialState: function () {
-        return {
-            userList: [1]
-        };
-    },
+var App = React.createClass({
+
     componentDidMount: function () {
-            this.unsubscribe = UserStore.listen(this.onStateChange);
+        this.unsubscribe = UserStore.listen(this.onStateChange);
+        UserActions.getCurrentUser();
     },
 
     componentWillUnmount: function () {
-            this.unsubscribe();
+        this.unsubscribe();
     },
 
     onStateChange: function (newState) {
         this.setState(newState);
     },
 
-    testAction: function () {
-        UserActions.testAction();
-    },
-
-    render: function() {
-        // return (<p>test</p>);
-
-        var userComponents = this.state.userList.map(function (user) {
-            return (
-                <TestSubComponent test={user} />
-            );
-        });
-
+    render: function () {
         return (
             <div>
-                {userComponents}
-                <input type="button"  value="test" onClick={this.testAction} />
+                <Menu data={this.state} />
+                <Calendar />
             </div>
-            // {this.state.userList.map(function (user) {
-            //     return (<p>{user}</p>)
-            // })}
         );
     }
 });
 
-var TestSubComponent = React.createClass({
+var Menu = React.createClass({
     propTypes: {
-        name: React.PropTypes.string
-    },
-
-    getDefaultProps: function () {
-        return {
-            test: 'empty'
-        };
+        data: React.PropTypes.object
     },
 
     render: function () {
+        console.log(this.props.data);
+        console.log(this.props.data && this.props.data.currentUser);
+        var userName = (this.props.data && this.props.data.currentUser)
+            ? this.props.data.currentUser.Name
+            : 'empty';
+
         return (
-            <p>{this.props.test}</p>
+            <div id="menu">
+                <div>
+                    <label>{userName}</label>
+                </div>
+                <div id="login">
+                    <h3>Login</h3>
+                    <div>
+                        <label >Email:</label>
+                        <input id="loginEmail" type="text" />
+                        <label >Password:</label>
+                        <input id="loginPassword" type="password" />
+                        <button id="loginButton">Login</button>
+                    </div>
+                </div>
+                <RegisterForm />
+            </div>
         );
     }
 });
 
+var RegisterForm = React.createClass({
 
+    handleRegister: function (e) {
+        var user = {
+            UserId: UserStore.state.currentUser.UserId,
+            Name: ReactDOM.findDOMNode(this.refs.registerName).value,
+            Email: ReactDOM.findDOMNode(this.refs.registerEmail).value,
+            Password: ReactDOM.findDOMNode(this.refs.registerPassword).value,
+            Password2: ReactDOM.findDOMNode(this.refs.registerPassword2).value
+        };
+        UserActions.register(user);
+    },
 
-React.render(
-    <TestComponent />,
-    document.getElementById('reactTest')
-);
+    render: function () {
 
+        return (
+            <div id="register">
+                <h3>Register</h3>
+                <div>
+                    <label >Name:</label>
+                    <input ref="registerName" type="text" />
+                    <label >Email:</label>
+                    <input ref="registerEmail" type="text" />
+                    <label >Password:</label>
+                    <input ref="registerPassword" type="password" />
+                    <label >Password:</label>
+                    <input ref="registerPassword2" type="password" />
 
+                    <button onClick={this.handleRegister}>Register</button>
+                </div>
+            </div>
+        );
+    }
+});
 
+var Calendar = React.createClass({
+    render: function () {
+        return (
+            <div id="calendar"></div>
+        );
+    }
+});
 
-//
-//
-//
-// var CommentBox = React.createClass({
-//     getInitialState: function () {
-//         return { data: [], title: 'Title' };
-//     },
-//     render: function () {
-//         return (
-//             <div className="commentBox">
-//                 <h3>{this.state.title}</h3>
-//                 <CommentList data={this.state.data} />
-//                 <CommentForm />
-//             </div>
-//           );
-//     },
-//     componentDidMount: function () {
-//         var self = this;
-//         var emailField = $('#loginEmail').first();
-//         $('#loginButton').click(function () {
-//             self.setState({ title: emailField.val() });
-//         });
-//     }
-// });
-//
-// var CommentList = React.createClass({
-//     render: function () {
-//         var comments = this.props.data.map(function (comment) {
-//             return (
-//                 <Comment author={comment.Author}>
-//                     {comment.Text}
-//                 </Comment>
-//             );
-//         });
-//
-//         return (
-//             <div className="commentList">
-//                 {comments}
-//             </div>
-//         );
-//     }
-// });
-//
-// var Comment = React.createClass({
-//     render: function () {
-//         return (
-//             <div className="comment">
-//                 <p className="commentAuthor">
-//                     {this.props.author}
-//                 </p>
-//                 {this.props.children}
-//             </div>
-//         );
-//     }
-// });
-//
-// var CommentForm = React.createClass({
-//     render: function () {
-//         return (
-//             <div className="commentForm">
-//                 CommentForm
-//             </div>
-//         );
-//     }
-// });
-//
-// var test = React.createClass({
-//
-// })
-//
-// var data = [
-//     { Author: 'Author 1', Text: 'Text 1' },
-//     { Author: 'Author 2', Text: 'Text 2' },
-//     { Author: 'Author 3', Text: 'Text 3' }
-// ]
-//
-// React.render(
-//     <CommentBox data={data} />,
-//     document.getElementById('react')
-// );
+$(function() {
+    ReactDOM.render(
+        <App />,
+        document.getElementById('reactTest')
+    );
+});

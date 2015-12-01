@@ -21,21 +21,45 @@
             return location.protocol + '//' + location.host;
         },
 
-        get: function (methodUri) {
-            return $.ajax({
+        get: function (methodUri, onDone, onFail) {
+            $.ajax({
                 url: methodUri,
                 type: 'GET',
                 contentType: 'application/json'
-            });
+            })
+                .done(function (data) {
+                    if (onDone) {
+                        onDone(data);
+                    }
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    if (onFail) {
+                        onFail(jqXHR, textStatus, errorThrown);
+                    }
+                });
         },
 
-        post: function (postData, methodUri) {
-            return $.ajax({
+        post: function (methodUri, postData, onDone, onFail) {
+            $.ajax({
                 url: methodUri,
                 type: 'POST',
                 dataType: 'json',
                 data: postData
-            });
+            })
+                .done(function (data) {
+                    if (onDone) {
+                        onDone(data);
+                    }
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    if (onFail) {
+                        onFail(jqXHR, textStatus, errorThrown);
+                    }
+                });
         }
     },
 
@@ -73,10 +97,10 @@
     },
 
     model: {
-        User: function (userId, name) {
+        User: function () {
             var self = this;
-            self.UserId = userId;
-            self.Name = name;
+            self.UserId = null;
+            self.Name = '';
         },
 
         Event: function () {
@@ -140,6 +164,8 @@
             var length = users.length;
             for (var i = 0; i < length; i++) {
                 var user = new core.model.User(users[i].UserId, users[i].Name);
+                user.UserId = users[i].UserId;
+                user.Name = users[i].Name;
                 self.addUser(user);
             }
         };

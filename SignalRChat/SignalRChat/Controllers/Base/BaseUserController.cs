@@ -2,6 +2,7 @@
 using MyCalendar.Common.Core;
 using MyCalendar.Common.Extensions;
 using MyCalendar.Common.Models;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -12,6 +13,8 @@ namespace SignalRChat.Controllers.Base
         protected CalendarContext Db { get; set; }
 
         protected int? CurrentUserId { get; set; }
+
+        protected User CurrentUser { get; set; }
 
         public BaseUserController()
         {
@@ -28,12 +31,17 @@ namespace SignalRChat.Controllers.Base
                 CurrentUserId = cookie.Value.ToInt();
             }
 
-            if (!CurrentUserId.HasValue)
+            if (CurrentUserId.HasValue)
             {
-                var user = new User();
-                Db.Users.Add(user);
+                CurrentUser = Db.Users.FirstOrDefault(u => u.UserId == CurrentUserId);
+            }
+
+            if (CurrentUser == null)
+            {
+                CurrentUser = new User();
+                Db.Users.Add(CurrentUser);
                 Db.SaveChanges();
-                Response.Cookies.Add(new HttpCookie(Constant.Cookie.MyCalendarUser, user.UserId.ToString()));
+                Response.Cookies.Add(new HttpCookie(Constant.Cookie.MyCalendarUser, CurrentUser.UserId.ToString()));
             }
         }
     }
