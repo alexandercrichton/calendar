@@ -1,7 +1,6 @@
 
 
 var App = React.createClass({
-
     componentDidMount: function () {
         this.unsubscribe = UserStore.listen(this.onStateChange);
         UserActions.getCurrentUser();
@@ -31,38 +30,77 @@ var Menu = React.createClass({
     },
 
     render: function () {
-        console.log(this.props.data);
-        console.log(this.props.data && this.props.data.currentUser);
-        var userName = (this.props.data && this.props.data.currentUser)
-            ? this.props.data.currentUser.Name
-            : 'empty';
-
+        var currentUser = (this.props.data)
+            ? this.props.data.currentUser
+            : null;
         return (
             <div id="menu">
+                {(function () {
+                    if (currentUser) {
+                        return (
+                            <div>
+                                <CurrentUserPanel currentUser={currentUser} />
+                                <LogoutForm />
+                            </div>
+                        );
+                    } else {
+                        return (
+                            <div>
+                                <LoginForm />
+                                <RegisterForm />
+                            </div>
+                        );
+                    }
+                })()}
+            </div>
+        );
+    }
+});
+
+var CurrentUserPanel = React.createClass({
+    propTypes: {
+        currentUser: React.PropTypes.object
+    },
+    render: function () {
+        var userName = (this.props.currentUser)
+            ? this.props.currentUser.Name
+            : 'empty';
+        return (
+            <div>
+                <label>{userName}</label>
+            </div>
+        );
+    }
+});
+
+var LoginForm = React.createClass({
+    handleLogin: function (e) {
+        var user = {
+            Email: ReactDOM.findDOMNode(this.refs.loginEmail).value,
+            Password: ReactDOM.findDOMNode(this.refs.loginPassword).value
+        };
+        UserActions.login(user);
+    },
+    render: function () {
+        return (
+            <div>
+                <h3>Login</h3>
                 <div>
-                    <label>{userName}</label>
+                    <label >Email:</label>
+                    <input ref="loginEmail" type="text" />
+                    <label >Password:</label>
+                    <input ref="loginPassword" type="password" />
+
+                    <button onClick={this.handleLogin}>Login</button>
                 </div>
-                <div id="login">
-                    <h3>Login</h3>
-                    <div>
-                        <label >Email:</label>
-                        <input id="loginEmail" type="text" />
-                        <label >Password:</label>
-                        <input id="loginPassword" type="password" />
-                        <button id="loginButton">Login</button>
-                    </div>
-                </div>
-                <RegisterForm />
             </div>
         );
     }
 });
 
 var RegisterForm = React.createClass({
-
     handleRegister: function (e) {
         var user = {
-            UserId: UserStore.state.currentUser.UserId,
             Name: ReactDOM.findDOMNode(this.refs.registerName).value,
             Email: ReactDOM.findDOMNode(this.refs.registerEmail).value,
             Password: ReactDOM.findDOMNode(this.refs.registerPassword).value,
@@ -70,9 +108,7 @@ var RegisterForm = React.createClass({
         };
         UserActions.register(user);
     },
-
     render: function () {
-
         return (
             <div id="register">
                 <h3>Register</h3>
@@ -88,6 +124,19 @@ var RegisterForm = React.createClass({
 
                     <button onClick={this.handleRegister}>Register</button>
                 </div>
+            </div>
+        );
+    }
+});
+
+var LogoutForm = React.createClass({
+    handleLogout: function (e) {
+        UserActions.logout();
+    },
+    render: function () {
+        return (
+            <div>
+                <button onClick={this.handleLogout}>Logout</button>
             </div>
         );
     }

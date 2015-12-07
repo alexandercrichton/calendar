@@ -2,8 +2,10 @@
 using MyCalendar.Common.Core;
 using MyCalendar.Common.Models;
 using SignalRChat.Controllers.Base;
+using SignalRChat.Core;
 using SignalRChat.Models.User;
 using System;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -26,44 +28,54 @@ namespace SignalRChat.Controllers
         [HttpPost]
         public JsonResult Register(RegisterModel registerModel)
         {
-            UserModel userModel = null;
-
-            if (registerModel != null && CurrentUser != null
-                && registerModel.UserId == CurrentUser.UserId && !CurrentUser.IsActive)
+            if (registerModel != null && registerModel.UserId == null)
             {
-                {
-                    CurrentUser = Mapper.Map<User>(registerModel);
-                    CurrentUser.IsActive = true;
+                CurrentUser = new User();
+                Mapper.Map(registerModel, CurrentUser);
+                CurrentUser.IsActive = true;
 
-                    Db.SaveChanges();
+                Db.Users.Add(CurrentUser);
+                Db.SaveChanges();
 
-                    userModel = Mapper.Map<UserModel>(CurrentUser);
-                }
+                var userModel = new UserModel();
+                Mapper.Map(CurrentUser, userModel);
+                return new JsonNetResult { Data = userModel };
             }
 
-            return Json(userModel);
+            return new JsonNetResult { Data = null };
         }
 
-        public ActionResult Logout()
+        [HttpPost]
+        public JsonNetResult Logout()
         {
+            UserModel userModel = null;
+
             var cookie = new HttpCookie(Constant.Cookie.MyCalendarUser, "");
             cookie.Expires = DateTime.Now.AddYears(-1);
 
             Response.Cookies.Set(cookie);
 
-            return RedirectToAction("Index", "Calendar");
+            return new JsonNetResult { Data = null };
         }
 
-        public ActionResult Login(LoginViewModel loginModel)
+        [HttpPost]
+        public JsonNetResult Login(LoginViewModel loginModel)
         {
-            if (CurrentUser?.Email == loginModel.Email && CurrentUser?.Password == loginModel.Password)
+            UserModel userModel = null;
+
+            if (loginModel?.Email != null && loginModel.Password != null)
             {
-                var cookie = new HttpCookie(Constant.Cookie.MyCalendarUser, CurrentUser.UserId.ToString());
-                Response.Cookies.Set(cookie);
-                return RedirectToAction("Index", "Calendar");
+                CurrentUser = Db.Users.FirstOrDefault(u => u.Email == loginModel.Email
+                    && u.Password == loginModel.Password);
+                if (CurrentUser != null)
+                {
+                    var cookie = new HttpCookie(Constant.Cookie.MyCalendarUser, CurrentUser.UserId.ToString());
+                    Response.Cookies.Set(cookie);
+                    Mapper.Map(CurrentUser, userModel);
+                }
             }
 
-            return RedirectToAction("Index", "Calendar");
+            return new JsonNetResult { Data = userModel };
         }
     }
 }
