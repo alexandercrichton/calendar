@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="react-body"></div>
+
+<script type="text/javascript">
+    require(['main'], function () {
+        require(['jsx!React/Components/App'], function () { });
+    });
+</script>
