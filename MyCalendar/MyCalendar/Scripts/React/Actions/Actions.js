@@ -6,7 +6,11 @@
         Reflux
     ) {
         var Actions = Reflux.createActions([
+
             "setMenuSection",
+
+            'register',
+
             'logout'
         ]);
 

@@ -40,6 +40,16 @@
                 this.triggerStore();
             },
 
+            onRegister: function (registerFields) {
+                this.state.currentUser = {
+                    id: 1,
+                    name: registerFields.name,
+                    email: registerFields.email,
+                    password: registerFields.password
+                };
+
+                this.triggerStore();
+            },
             onLogout: function () {
                 this.state.currentUser = null;
                 this.triggerStore();

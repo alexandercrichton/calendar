@@ -11,10 +11,6 @@
     ) {
         var LogoutForm = React.createClass({
 
-            propTypes: {
-                onLogout: React.PropTypes.func.isRequired
-            },
-
             render: function () {
                 return (
                     <LogoutButton onClick={this.onLogout} />

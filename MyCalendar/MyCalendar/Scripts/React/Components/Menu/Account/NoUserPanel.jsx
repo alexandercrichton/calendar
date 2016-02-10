@@ -1,11 +1,13 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Menu/Account/LoginForm'
+        'jsx!React/Components/Menu/Account/LoginForm',
+        'jsx!React/Components/Menu/Account/RegisterForm'
     ],
     function (
         React,
-        LoginForm
+        LoginForm,
+        RegisterForm
     ) {
         var NoUserPanel = React.createClass({
 
@@ -15,6 +17,7 @@
                 return (
                     <div>
                         <LoginForm />
+                        <RegisterForm />
                     </div>
                 );
             }
