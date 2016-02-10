@@ -11,7 +11,11 @@
 
             'register',
 
-            'logout'
+            'login',
+
+            'logout',
+
+            "editUser"
         ]);
 
         return Actions;

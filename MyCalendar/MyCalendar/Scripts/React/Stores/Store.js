@@ -11,21 +11,30 @@
 
             init: function () {
                 this.state = {
-                    currentMenuSelection: 1,
-                    currentUser: {
-                        id: 1,
-                        name: 'current user'
+                    ui: {
+                        menuPanel: 1,
+                        primaryPanel: 1
                     },
-                    people: [
+                    users: [
                         {
-                            id: 1,
-                            name: 'person 1'
+                            userId: 1,
+                            name: '1',
+                            email: '1',
+                            password: '1'
+                        },
+                        {
+                            userId: 2,
+                            name: '2',
+                            email: '2',
+                            password: '2'
                         }
                     ],
+                    currentUserId: 1,
                     groups: [
                         {
-                            id: 1,
-                            name: 'group 1'
+                            groupId: 1,
+                            name: 'group 1',
+                            userIds: [1, 2]
                         }
                     ]
                 };
@@ -35,24 +44,66 @@
                 return this.state;
             },
 
-            onSetMenuSection: function (section) {
-                this.state.currentMenuSelection = section;
+            onSetMenuSection: function (panel) {
+                this.state.ui.menuPanel = panel;
                 this.triggerStore();
             },
 
             onRegister: function (registerFields) {
-                this.state.currentUser = {
-                    id: 1,
-                    name: registerFields.name,
-                    email: registerFields.email,
-                    password: registerFields.password
-                };
+                if (!this.getUserByEmailPassword(registerFields.email, registerFields.password)) {
+                    var user = {
+                        userId: this.state.users.length,
+                        name: registerFields.name,
+                        email: registerFields.email,
+                        password: registerFields.password
+                    };
 
+                    this.state.users.push(user);
+
+                    this.setCurrentUser(user.userId);
+                }
+            },
+
+            onLogin: function (loginFields) {
+                var user = this.getUserByEmailPassword(loginFields.email, loginFields.password);
+                if (user) {
+                    this.setCurrentUser(user.userId);
+                }
+            },
+
+            setCurrentUser: function (userId) {
+                this.state.currentUser = this.getUserById(userId);
                 this.triggerStore();
             },
+
+            getUserById: function (userId) {
+                for (var i = 0; i < this.state.users.length; i++) {
+                    var user = this.state.users[i];
+                    if (user.userId === userId) {
+                        return user;
+                    }
+                }
+
+                return null;
+            },
+
+            getUserByEmailPassword: function (email, password) {
+                for (var i = 0; i < this.state.users.length; i++) {
+                    var user = this.state.users[i];
+                    if (user.email === email && user.password === password) {
+                        return user;
+                    }
+                }
+
+                return null;
+            },
+
             onLogout: function () {
                 this.state.currentUser = null;
                 this.triggerStore();
+            },
+
+            onEditUser: function () {
             },
 
             triggerStore: function () {

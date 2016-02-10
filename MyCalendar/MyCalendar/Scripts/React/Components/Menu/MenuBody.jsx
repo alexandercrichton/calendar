@@ -30,11 +30,11 @@
             },
 
             renderCurrentPanel: function () {
-                if (this.state.currentMenuSelection === 1) {
+                if (this.state.ui.menuPanel === 1) {
                     return (
                         <AccountPanel currentUser={this.state.currentUser} />
                     );
-                } else if (this.state.currentMenuSelection === 2) {
+                } else if (this.state.ui.menuPanel === 2) {
                     return (
                         <PeoplePanel people={this.state.people} />
                     );

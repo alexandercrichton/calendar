@@ -24,13 +24,13 @@
                     <div className="menu-header">
                         <MenuHeaderLink label="Account"
                                         onClick={function() { Actions.setMenuSection(1);}}
-                                        isSelected={(this.state.currentMenuSelection === 1)} />
+                                        isSelected={(this.state.ui.menuPanel === 1)} />
                         <MenuHeaderLink label="People"
                                         onClick={function() { Actions.setMenuSection(2);}} 
-                                        isSelected={(this.state.currentMenuSelection === 2)} />
+                                        isSelected={(this.state.ui.menuPanel === 2)} />
                         <MenuHeaderLink label="Groups"
                                         onClick={function() { Actions.setMenuSection(3);}} 
-                                        isSelected={(this.state.currentMenuSelection === 3)} />
+                                        isSelected={(this.state.ui.menuPanel === 3)} />
                     </div>
                 );
             }

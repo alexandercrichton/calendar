@@ -1,22 +1,23 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Menu/Account/LogoutForm'
+        'Actions',
+        'jsx!React/Components/General/Elements/Button'
     ],
     function (
         React,
-        LogoutForm
+        Actions,
+        Button
     ) {
         var UserPanel = React.createClass({
 
-            propTypes: {
-                currentUser: React.PropTypes.object.isRequired
-            },
+            propTypes: {},
 
             render: function () {
                 return (
                     <div>
-                        <LogoutForm />
+                        <Button label="Edit details" onClick={Actions.editUser} />
+                        <Button label="Logout" onClick={Actions.logout} />
                     </div>
                 );
             }
