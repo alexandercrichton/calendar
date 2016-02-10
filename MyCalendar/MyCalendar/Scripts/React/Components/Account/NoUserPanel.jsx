@@ -1,8 +1,8 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Menu/Account/LoginForm',
-        'jsx!React/Components/Menu/Account/RegisterForm'
+        'jsx!React/Components/Account/LoginForm',
+        'jsx!React/Components/Account/RegisterForm'
     ],
     function (
         React,

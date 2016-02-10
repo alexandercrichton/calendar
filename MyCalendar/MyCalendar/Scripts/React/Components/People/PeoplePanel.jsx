@@ -1,7 +1,7 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Menu/People/Person'
+        'jsx!React/Components/People/Person'
     ],
     function (
         React,

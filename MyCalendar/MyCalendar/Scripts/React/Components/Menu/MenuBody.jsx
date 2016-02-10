@@ -3,9 +3,9 @@
         'react',
         'reflux',
         'Store',
-        'jsx!React/Components/Menu/Account/AccountPanel',
-        'jsx!React/Components/Menu/People/PeoplePanel',
-        'jsx!React/Components/Menu/Groups/GroupPanel'
+        'jsx!React/Components/Account/AccountPanel',
+        'jsx!React/Components/People/PeoplePanel',
+        'jsx!React/Components/Groups/GroupPanel'
     ],
     function (
         React,

@@ -1,7 +1,7 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Menu/Groups/Group'
+        'jsx!React/Components/Groups/Group'
     ],
     function (
         React,

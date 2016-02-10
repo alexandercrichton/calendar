@@ -2,19 +2,19 @@
     [
         'react',
         'jsx!React/Components/Menu/Menu',
-        'jsx!React/Components/Calendar/Calendar'
+        'jsx!React/Components/Main/MainPanel'
     ],
     function (
         React,
         Menu,
-        Calendar
+        MainPanel
     ) {
         var App = React.createClass({
             render: function () {
                 return (
                     <div>
                         <Menu />
-                        <Calendar />
+                        <MainPanel />
                     </div>
                 );
             }

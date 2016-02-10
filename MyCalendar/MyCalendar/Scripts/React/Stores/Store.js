@@ -13,7 +13,7 @@
                 this.state = {
                     ui: {
                         menuPanel: 1,
-                        primaryPanel: 1
+                        mainPanel: 0
                     },
                     users: [
                         {
@@ -29,7 +29,7 @@
                             password: '2'
                         }
                     ],
-                    currentUserId: 1,
+                    currentUserId: 0,
                     groups: [
                         {
                             groupId: 1,
