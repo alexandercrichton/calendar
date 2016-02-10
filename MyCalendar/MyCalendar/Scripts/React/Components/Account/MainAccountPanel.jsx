@@ -1,19 +1,24 @@
 ﻿define(
     [
-        'react'
+        'react',
+        'jsx!React/Components/Account/RegisterForm'
     ],
     function (
-        React
+        React,
+        RegisterForm
     ) {
         var MainAccountPanel = React.createClass({
 
-            propTypes: {},
+            propTypes: {
+                user: React.PropTypes.object.isRequired
+            },
 
             render: function () {
                 return (
-                    <div>
-                        account
-                    </div>
+                    <RegisterForm
+                        initialName={this.props.user.name}
+                        initialEmail={this.props.user.email}
+                        initialPassword={this.props.user.password} />
                 );
             }
         });

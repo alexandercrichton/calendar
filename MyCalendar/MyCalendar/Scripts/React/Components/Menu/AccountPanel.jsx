@@ -1,8 +1,8 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Account/UserPanel',
-        'jsx!React/Components/Account/NoUserPanel'
+        'jsx!React/Components/Menu/UserPanel',
+        'jsx!React/Components/Menu/NoUserPanel'
     ],
     function (
         React,

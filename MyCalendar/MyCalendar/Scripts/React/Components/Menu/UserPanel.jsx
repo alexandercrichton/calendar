@@ -16,7 +16,7 @@
             render: function () {
                 return (
                     <div>
-                        <Button label="Edit details" onClick={Actions.editUser} />
+                        <Button label="Details" onClick={Actions.editUser} />
                         <Button label="Logout" onClick={Actions.logout} />
                     </div>
                 );

@@ -13,22 +13,26 @@
     ) {
         var RegisterForm = React.createClass({
 
-            propTypes: {},
+            propTypes: {
+                initialName: React.PropTypes.string,
+                initialEmail: React.PropTypes.string,
+                initialPassword: React.PropTypes.string
+            },
 
             getInitialState: function () {
                 return {
-                    name: '',
-                    email: '',
-                    password: ''
+                    name: this.props.initialName || '',
+                    email: this.props.initialEmail || '',
+                    password: this.props.password || ''
                 };
             },
 
             render: function () {
                 return (
                     <div>
-                        <TextBoxField label='Name' onChange={this.onNameChanged} />
-                        <TextBoxField label='Email' onChange={this.onEmailChanged} />
-                        <TextBoxField label='Password' onChange={this.onPasswordChanged} />
+                        <TextBoxField label='Name' value={this.state.name} onChange={this.onNameChanged } />
+                        <TextBoxField label='Email' value={this.state.email} onChange={this.onEmailChanged} />
+                        <TextBoxField label='Password' value={this.state.password} onChange={this.onPasswordChanged} />
                         <RegisterButton onClick={this.onRegister} />
                     </div>
                 );

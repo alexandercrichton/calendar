@@ -30,6 +30,9 @@
                         }
                     ],
                     currentUserId: 0,
+                    getCurrentUser: function () {
+                        return this.getUserById(this.state.currentUserId);
+                    }.bind(this),
                     groups: [
                         {
                             groupId: 1,
@@ -72,7 +75,7 @@
             },
 
             setCurrentUser: function (userId) {
-                this.state.currentUser = this.getUserById(userId);
+                this.state.currentUserId = userId;
                 this.triggerStore();
             },
 
@@ -99,11 +102,14 @@
             },
 
             onLogout: function () {
-                this.state.currentUser = null;
+                this.state.currentUserId = 0;
+                this.state.ui.mainPanel = 0;
                 this.triggerStore();
             },
 
             onEditUser: function () {
+                this.state.ui.mainPanel = 1;
+                this.triggerStore();
             },
 
             triggerStore: function () {

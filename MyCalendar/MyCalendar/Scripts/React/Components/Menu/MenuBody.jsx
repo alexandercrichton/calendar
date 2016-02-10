@@ -3,9 +3,9 @@
         'react',
         'reflux',
         'Store',
-        'jsx!React/Components/Account/AccountPanel',
-        'jsx!React/Components/People/PeoplePanel',
-        'jsx!React/Components/Groups/GroupPanel'
+        'jsx!React/Components/Menu/AccountPanel',
+        'jsx!React/Components/Menu/PeoplePanel',
+        'jsx!React/Components/Menu/GroupPanel'
     ],
     function (
         React,
@@ -32,7 +32,7 @@
             renderCurrentPanel: function () {
                 if (this.state.ui.menuPanel === 1) {
                     return (
-                        <AccountPanel currentUser={this.state.currentUser} />
+                        <AccountPanel currentUser={this.state.getCurrentUser()} />
                     );
                 } else if (this.state.ui.menuPanel === 2) {
                     return (

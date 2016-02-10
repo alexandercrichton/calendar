@@ -21,7 +21,8 @@
 
                 var panel;
                 if (this.state.ui.mainPanel === 1) {
-                    panel = (<MainAccountPanel />);
+                    var currentUser = this.state.getCurrentUser();
+                    panel = (<MainAccountPanel user={currentUser } />);
                 }
 
                 return (
