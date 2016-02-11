@@ -18,7 +18,9 @@
 
             "setMainPanel",
 
-            "saveUserDetails"
+            "saveUserDetails",
+
+            "viewPerson"
         ]);
 
         return Actions;

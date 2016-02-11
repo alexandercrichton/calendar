@@ -1,32 +1,36 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/People/Person'
+        'jsx!React/Components/Menu/MenuPerson'
     ],
     function (
         React,
-        Person
+        MenuPerson
     ) {
         var MenuPeoplePanel = React.createClass({
 
             propTypes: {
-                users: React.PropTypes.array.isRequired
+                users: React.PropTypes.array.isRequired,
+                selectedUserId: React.PropTypes.number
             },
 
             render: function () {
-                return (
-                    <div>
-                        {this.renderPeople()}
-                    </div>
-                );
+                if (this.props.users) {
+                    return (
+                        <div>
+                            {this.renderPeople()}
+                        </div>
+                    );
+                }
             },
 
             renderPeople: function () {
                 return this.props.users.map(function (user, i) {
                     return (
-                        <Person user={user} key={i} />
+                        <MenuPerson name={user.name} userId={user.userId} key={i}
+                                    isSelected={this.props.selectedUserId === user.userId} />
                     );
-                })
+                }, this)
             }
         });
 

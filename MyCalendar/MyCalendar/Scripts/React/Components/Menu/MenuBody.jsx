@@ -36,7 +36,7 @@
                     );
                 } else if (this.state.ui.menuPanel === 2) {
                     return (
-                        <MenuPeoplePanel users={this.state.users} />
+                        <MenuPeoplePanel users={this.state.users} selectedUserId={this.state.currentSelectedUserId} />
                     );
                 } else {
                     return (

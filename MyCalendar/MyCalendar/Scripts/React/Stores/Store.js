@@ -47,6 +47,10 @@
                     getCurrentUser: function () {
                         return this.getUserById(this.state.currentUserId);
                     }.bind(this),
+                    currentSelectedUserId: 0,
+                    getCurrentSelectedUser: function () {
+                        return this.getUserById(this.state.currentSelectedUserId);
+                    }.bind(this),
                     groups: [
                         {
                             groupId: 1,
@@ -59,6 +63,10 @@
 
             getInitialState: function () {
                 return this.state;
+            },
+
+            isUserLoggedIn: function () {
+                return this.state.currentUserId > 0;
             },
 
             onRegister: function (registerFields) {
@@ -118,31 +126,60 @@
             },
 
             onSetMenuPanel: function (panel) {
-                this.state.ui.menuPanel = panel;
-                this.triggerStore();
+                if (this.isUserLoggedIn()) {
+                    if (this.isUserLoggedIn()) {
+                        this.state.ui.menuPanel = panel;
+                        this.triggerStore();
+                    }
+                }
             },
 
             onShowMenuAccountPanel: function () {
-                this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+                if (this.isUserLoggedIn()) {
+                    this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+                }
             },
 
             onShowMenuPeoplePanel: function () {
-                this.onSetMenuPanel(MENU_PANEL.PEOPLE);
+                if (this.isUserLoggedIn()) {
+                    this.onSetMenuPanel(MENU_PANEL.PEOPLE);
+                }
             },
 
             onShowMenuGroupsPanel: function () {
-                this.onSetMenuPanel(MENU_PANEL.GROUPS);
+                if (this.isUserLoggedIn()) {
+                    this.onSetMenuPanel(MENU_PANEL.GROUPS);
+                }
             },
 
             onSetMainPanel: function (panel) {
-                this.state.ui.mainPanel = panel;
-                this.triggerStore();
+                if (this.isUserLoggedIn()) {
+                    this.state.ui.mainPanel = panel;
+                    this.triggerStore();
+                }
+            },
+
+            onShowMainPersonPanel: function () {
+                this.onSetMainPanel(MAIN_PANEL.PERSON);
+            },
+
+            onViewPerson: function (userId) {
+                if (this.isUserLoggedIn()) {
+                    var user = this.getUserById(userId);
+                    if (user) {
+                        this.state.currentSelectedUserId = user.userId;
+                        this.onShowMainPersonPanel();
+                        this.triggerStore();
+                    }
+                }
             },
 
             onSaveUserDetails: function (userDetails) {
-                var currentUser = this.state.getCurrentUser();
-                Object.assign(currentUser, userDetails);
-                this.triggerStore();
+                if (this.isUserLoggedIn()) {
+                    var currentUser = this.state.getCurrentUser();
+                    Object.assign(currentUser, userDetails);
+                    this.triggerStore();
+                }
             },
 
             triggerStore: function () {

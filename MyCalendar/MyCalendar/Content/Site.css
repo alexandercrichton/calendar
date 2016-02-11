@@ -6,6 +6,14 @@ body {
     margin: 0;
 }
 
+a {
+    display: block;
+}
+
+    a:hover {
+        background-color: #fff;
+    }
+
 .absolute-container {
     position: absolute;
     width: 100%;
@@ -34,6 +42,6 @@ body {
     float: left;
 }
 
-a:hover {
-    background-color: #fff;
+.person-selected {
+    font-weight: bold;
 }
