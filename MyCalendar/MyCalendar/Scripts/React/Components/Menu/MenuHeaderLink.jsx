@@ -14,14 +14,14 @@
             },
 
             render: function () {
-                var className;
+                var className = "menu-header-option";
                 if (this.props.isSelected) {
-                    className = "menu-header-option-select";
+                    className += " menu-header-option-select";
                 }
 
                 return (
                     <a className={className} href='/' onClick={this.onClick}>
-                        <div className="menu-header-option">{this.props.label}</div>
+                        <div className="">{this.props.label}</div>
                     </a>
                 );
             },

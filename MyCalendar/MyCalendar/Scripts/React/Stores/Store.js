@@ -8,7 +8,9 @@
     ) {
         const MAIN_PANEL = {
             NONE: 0,
-            USER_DETAILS: 1
+            USER_DETAILS: 1,
+            PERSON: 2,
+            GROUP: 3
         };
 
         const MENU_PANEL = {

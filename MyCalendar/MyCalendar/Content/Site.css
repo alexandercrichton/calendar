@@ -33,3 +33,7 @@ body {
     width: 66%;
     float: left;
 }
+
+a:hover {
+    background-color: #fff;
+}
