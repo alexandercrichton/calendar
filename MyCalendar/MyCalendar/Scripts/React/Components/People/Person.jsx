@@ -8,12 +8,12 @@
         var Person = React.createClass({
 
             propTypes: {
-                person: React.PropTypes.object.isRequired
+                user: React.PropTypes.object.isRequired
             },
 
             render: function () {
                 return (
-                    <p>{this.props.person.name}</p>
+                    <p>{this.props.user.name}</p>
                 );
             }
         });

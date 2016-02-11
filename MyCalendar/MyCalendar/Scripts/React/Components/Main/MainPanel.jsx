@@ -3,13 +3,13 @@
         'react',
         'reflux',
         'Store',
-        'jsx!React/Components/Account/MainAccountPanel'
+        'jsx!React/Components/Account/EditUserPanel'
     ],
     function (
         React,
         Reflux,
         Store,
-        MainAccountPanel
+        EditUserPanel
     ) {
         var MainPanel = React.createClass({
 
@@ -22,7 +22,9 @@
                 var panel;
                 if (this.state.ui.mainPanel === 1) {
                     var currentUser = this.state.getCurrentUser();
-                    panel = (<MainAccountPanel user={currentUser } />);
+                    if (currentUser) {
+                        panel = (<EditUserPanel user={currentUser } />);
+                    }
                 }
 
                 return (

@@ -3,17 +3,17 @@
         'react',
         'reflux',
         'Store',
-        'jsx!React/Components/Menu/AccountPanel',
-        'jsx!React/Components/Menu/PeoplePanel',
-        'jsx!React/Components/Menu/GroupPanel'
+        'jsx!React/Components/Menu/MenuAccountPanel',
+        'jsx!React/Components/Menu/MenuPeoplePanel',
+        'jsx!React/Components/Menu/MenuGroupsPanel'
     ],
     function (
         React,
         Reflux,
         Store,
-        AccountPanel,
-        PeoplePanel,
-        GroupPanel
+        MenuAccountPanel,
+        MenuPeoplePanel,
+        MenuGroupsPanel
     ) {
         var MenuBody = React.createClass({
 
@@ -32,15 +32,15 @@
             renderCurrentPanel: function () {
                 if (this.state.ui.menuPanel === 1) {
                     return (
-                        <AccountPanel currentUser={this.state.getCurrentUser()} />
+                        <MenuAccountPanel currentUser={this.state.getCurrentUser()} />
                     );
                 } else if (this.state.ui.menuPanel === 2) {
                     return (
-                        <PeoplePanel people={this.state.people} />
+                        <MenuPeoplePanel users={this.state.users} />
                     );
                 } else {
                     return (
-                        <GroupPanel groups={this.state.groups} />
+                        <MenuGroupsPanel groups={this.state.groups} />
                     );
                 }
             }

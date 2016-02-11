@@ -6,14 +6,26 @@
         Reflux,
         Actions
     ) {
+        const MAIN_PANEL = {
+            NONE: 0,
+            USER_DETAILS: 1
+        };
+
+        const MENU_PANEL = {
+            NONE: 0,
+            ACCOUNT: 1,
+            PEOPLE: 2,
+            GROUPS: 3
+        };
+
         var Store = Reflux.createStore({
             listenables: [Actions],
 
             init: function () {
                 this.state = {
                     ui: {
-                        menuPanel: 1,
-                        mainPanel: 0
+                        menuPanel: MENU_PANEL.ACCOUNT,
+                        mainPanel: MAIN_PANEL.USER_DETAILS
                     },
                     users: [
                         {
@@ -47,11 +59,6 @@
                 return this.state;
             },
 
-            onSetMenuSection: function (panel) {
-                this.state.ui.menuPanel = panel;
-                this.triggerStore();
-            },
-
             onRegister: function (registerFields) {
                 if (!this.getUserByEmailPassword(registerFields.email, registerFields.password)) {
                     var user = {
@@ -76,7 +83,8 @@
 
             setCurrentUser: function (userId) {
                 this.state.currentUserId = userId;
-                this.triggerStore();
+                this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+                this.onSetMainPanel(MAIN_PANEL.USER_DETAILS);
             },
 
             getUserById: function (userId) {
@@ -103,12 +111,35 @@
 
             onLogout: function () {
                 this.state.currentUserId = 0;
-                this.state.ui.mainPanel = 0;
+                this.onSetMainPanel(MAIN_PANEL.NONE);
                 this.triggerStore();
             },
 
-            onEditUser: function () {
-                this.state.ui.mainPanel = 1;
+            onSetMenuPanel: function (panel) {
+                this.state.ui.menuPanel = panel;
+                this.triggerStore();
+            },
+
+            onShowMenuAccountPanel: function () {
+                this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+            },
+
+            onShowMenuPeoplePanel: function () {
+                this.onSetMenuPanel(MENU_PANEL.PEOPLE);
+            },
+
+            onShowMenuGroupsPanel: function () {
+                this.onSetMenuPanel(MENU_PANEL.GROUPS);
+            },
+
+            onSetMainPanel: function (panel) {
+                this.state.ui.mainPanel = panel;
+                this.triggerStore();
+            },
+
+            onSaveUserDetails: function (userDetails) {
+                var currentUser = this.state.getCurrentUser();
+                Object.assign(currentUser, userDetails);
                 this.triggerStore();
             },
 

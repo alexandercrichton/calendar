@@ -16,10 +16,14 @@
             render: function () {
                 return (
                     <div>
-                        <Button label="Details" onClick={Actions.editUser} />
+                        <Button label="Details" onClick={this.onDetailsClick} />
                         <Button label="Logout" onClick={Actions.logout} />
                     </div>
                 );
+            },
+
+            onDetailsClick: function () {
+                Actions.setMainPanel(1);
             }
         });
 

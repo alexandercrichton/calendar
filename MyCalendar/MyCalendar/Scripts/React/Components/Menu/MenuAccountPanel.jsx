@@ -9,7 +9,7 @@
         UserPanel,
         NoUserPanel
     ) {
-        var AccountPanel = React.createClass({
+        var MenuAccountPanel = React.createClass({
 
             propTypes: {
                 currentUser: React.PropTypes.object
@@ -18,12 +18,12 @@
             render: function () {
                 return (
                     <div>
-                        {this.renderCurrentSection()}
+                        {this.renderCurrentPanel()}
                     </div>
                 );
             },
 
-            renderCurrentSection: function () {
+            renderCurrentPanel: function () {
                 if (this.isCurrentUser()) {
                     return (<UserPanel currentUser={this.props.currentUser } />);
                 } else {
@@ -36,5 +36,5 @@
             }
         });
 
-        return AccountPanel;
+        return MenuAccountPanel;
     });

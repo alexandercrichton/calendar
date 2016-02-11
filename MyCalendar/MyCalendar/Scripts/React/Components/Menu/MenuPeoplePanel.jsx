@@ -7,10 +7,10 @@
         React,
         Person
     ) {
-        var PeoplePanel = React.createClass({
+        var MenuPeoplePanel = React.createClass({
 
             propTypes: {
-                people: React.PropTypes.array.isRequired
+                users: React.PropTypes.array.isRequired
             },
 
             render: function () {
@@ -22,13 +22,13 @@
             },
 
             renderPeople: function () {
-                return this.props.people.map(function (person, i) {
+                return this.props.users.map(function (user, i) {
                     return (
-                        <Person person={person} key={i} />
+                        <Person user={user} key={i} />
                     );
                 })
             }
         });
 
-        return PeoplePanel;
+        return MenuPeoplePanel;
     });

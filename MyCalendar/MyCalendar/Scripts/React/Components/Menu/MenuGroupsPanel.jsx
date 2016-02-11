@@ -7,7 +7,7 @@
         React,
         Group
     ) {
-        var GroupPanel = React.createClass({
+        var MenuGroupsPanel = React.createClass({
 
             propTypes: {
                 groups: React.PropTypes.array.isRequired
@@ -30,5 +30,5 @@
             }
         });
 
-        return GroupPanel;
+        return MenuGroupsPanel;
     });

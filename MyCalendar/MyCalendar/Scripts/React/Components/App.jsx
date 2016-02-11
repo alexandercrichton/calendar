@@ -12,7 +12,7 @@
         var App = React.createClass({
             render: function () {
                 return (
-                    <div>
+                    <div className="absolute-container">
                         <Menu />
                         <MainPanel />
                     </div>

@@ -7,15 +7,18 @@
     ) {
         var Actions = Reflux.createActions([
 
-            "setMenuSection",
-
             'register',
-
             'login',
-
             'logout',
 
-            "editUser"
+            "setMenuPanel",
+            "showMenuAccountPanel",
+            "showMenuPeoplePanel",
+            "showMenuGroupsPanel",
+
+            "setMainPanel",
+
+            "saveUserDetails"
         ]);
 
         return Actions;
