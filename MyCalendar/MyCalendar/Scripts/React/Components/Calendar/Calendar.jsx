@@ -1,16 +1,23 @@
 ﻿define(
     [
-        'react'
+        'react',
+        "fullcalendar"
     ],
     function (
-        React
+        React,
+        fullcalendar
     ) {
         var Calendar = React.createClass({
+
+            propTypes: {},
+
+            componentDidMount: function () {
+                $("#my-calendar").fullCalendar({});
+            },
+
             render: function () {
                 return (
-                    <div className="calendar">
-                        calendar
-                    </div>
+                    <div id="my-calendar" />
                 );
             }
         });

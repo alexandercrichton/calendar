@@ -1,11 +1,13 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/Account/EditUserForm'
+        'jsx!React/Components/Account/EditUserForm',
+        'jsx!React/Components/Calendar/Calendar'
     ],
     function (
         React,
-        EditUserForm
+        EditUserForm,
+        Calendar
     ) {
         var EditUserPanel = React.createClass({
 
@@ -15,9 +17,12 @@
 
             render: function () {
                 return (
-                    <EditUserForm initialName={this.props.user.name}
-                                  initialEmail={this.props.user.email}
-                                  initialPassword={this.props.user.password} />
+                    <div>
+                        <EditUserForm initialName={this.props.user.name}
+                                      initialEmail={this.props.user.email}
+                                      initialPassword={this.props.user.password} />
+                        <Calendar />
+                    </div>
                 );
             }
         });
