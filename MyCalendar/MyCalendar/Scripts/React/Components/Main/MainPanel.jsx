@@ -36,7 +36,7 @@
                 }
 
                 return (
-                    <div>
+                    <div className="main-panel">
                         {panel}
                     </div>
                 );

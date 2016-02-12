@@ -12,7 +12,7 @@
             propTypes: {},
 
             componentDidMount: function () {
-                $("#my-calendar").fullCalendar({});
+                $("#my-calendar").fullCalendar();
             },
 
             render: function () {
