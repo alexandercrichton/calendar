@@ -18,9 +18,11 @@
 
             "setMainPanel",
 
+            "viewPerson",
             "saveUserDetails",
 
-            "viewPerson"
+            "addEventForCurrentUser"
+
         ]);
 
         return Actions;

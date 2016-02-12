@@ -1,18 +1,28 @@
 ﻿define(
     [
         'react',
-        "fullcalendar"
+        "fullcalendar",
+        "Actions"
     ],
     function (
         React,
-        fullcalendar
+        fullcalendar,
+        Actions
     ) {
         var Calendar = React.createClass({
 
             propTypes: {},
 
             componentDidMount: function () {
-                $("#my-calendar").fullCalendar();
+                $("#my-calendar").fullCalendar({
+                    dayClick: function (date, jsEvent, view) {
+                        Actions.addEventForCurrentUser(jsEvent);
+                    }
+                });
+            },
+
+            componentWillUpdate: function (nextProps) {
+
             },
 
             render: function () {

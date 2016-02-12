@@ -182,6 +182,10 @@
                 }
             },
 
+            onAddEventForCurrentUser: function (event) {
+                console.log(event);
+            },
+
             triggerStore: function () {
                 this.trigger(this.state);
             }
