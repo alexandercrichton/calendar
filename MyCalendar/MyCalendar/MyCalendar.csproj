@@ -109,10 +109,10 @@
     <Content Include="Scripts\react-with-addons.js" />
     <Content Include="Scripts\React\Stores\Store.js" />
     <Content Include="Scripts\React\Components\Calendar\Calendar.jsx" />
-    <Content Include="Scripts\React\Components\Groups\GroupPanel.jsx" />
+    <Content Include="Scripts\React\Components\Menu\MenuGroupsPanel.jsx" />
     <Content Include="Scripts\React\Components\Groups\Group.jsx" />
-    <Content Include="Scripts\React\Components\Account\UserPanel.jsx" />
-    <Content Include="Scripts\React\Components\Account\NoUserPanel.jsx" />
+    <Content Include="Scripts\React\Components\Menu\UserPanel.jsx" />
+    <Content Include="Scripts\React\Components\Menu\NoUserPanel.jsx" />
     <Content Include="Scripts\React\Components\Account\LoginForm.jsx" />
     <Content Include="Scripts\React\Components\General\Fields\TextBoxField.jsx" />
     <Content Include="Scripts\React\Components\General\Fields\Field.jsx" />
@@ -124,7 +124,11 @@
     <Content Include="Scripts\React\Components\General\Buttons\RegisterButton.jsx" />
     <Content Include="Scripts\React\Components\General\Buttons\LoginButton.jsx" />
     <Content Include="Scripts\React\Components\Main\MainPanel.jsx" />
-    <Content Include="Scripts\React\Components\MainAccountPanel.jsx" />
+    <Content Include="Scripts\React\Components\Account\EditUserPanel.jsx" />
+    <Content Include="Scripts\React\Components\Account\EditUserForm.jsx" />
+    <Content Include="Scripts\React\Components\General\Buttons\SaveButton.jsx" />
+    <Content Include="Scripts\React\Components\General\Elements\Label.jsx" />
+    <Content Include="Scripts\React\Components\General\Fields\LabelField.jsx" />
     <None Include="Scripts\React\Components\Menu\Menu.jsx" />
     <Content Include="Scripts\React\Actions\Actions.js" />
     <Content Include="Scripts\text.js" />
@@ -152,9 +156,11 @@
     <Content Include="Scripts\React\Components\Menu\MenuHeader.jsx" />
     <Content Include="Scripts\React\Components\Menu\MenuBody.jsx" />
     <Content Include="Scripts\React\Components\Menu\MenuHeaderLink.jsx" />
-    <Content Include="Scripts\React\Components\Account\AccountPanel.jsx" />
-    <Content Include="Scripts\React\Components\People\PeoplePanel.jsx" />
-    <Content Include="Scripts\React\Components\People\Person.jsx" />
+    <Content Include="Scripts\React\Components\Menu\MenuAccountPanel.jsx" />
+    <Content Include="Scripts\React\Components\Menu\MenuPeoplePanel.jsx" />
+    <Content Include="Scripts\React\Components\Menu\MenuPerson.jsx" />
+    <Content Include="Scripts\React\Components\People\PersonPanel.jsx" />
+    <Content Include="Scripts\React\Components\People\PersonForm.jsx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
