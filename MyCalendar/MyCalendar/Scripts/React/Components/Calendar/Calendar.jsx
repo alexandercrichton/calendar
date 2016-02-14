@@ -11,23 +11,48 @@
     ) {
         var Calendar = React.createClass({
 
-            propTypes: {},
-
-            componentDidMount: function () {
-                $("#my-calendar").fullCalendar({
-                    dayClick: function (date, jsEvent, view) {
-                        Actions.addEventForCurrentUser(jsEvent);
-                    }
-                });
+            propTypes: {
+                events: React.PropTypes.array.isRequired
             },
 
-            componentWillUpdate: function (nextProps) {
+            componentDidMount: function () {
+                this.node = this.getDOMNode();
+                this.renderCalendar(this.props);
+            },
 
+            componentWillReceiveProps: function (newProps) {
+                this.renderCalendar(newProps);
+            },
+
+            renderCalendar: function (props) {
+                $(this.node).fullCalendar("destroy");
+
+                $(this.node).fullCalendar({
+
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek'
+                    },
+
+                    selectable: true,
+
+                    select: function (start, end, jsEvent) {
+                        var event = {
+                            title: '',
+                            start: start,
+                            end: end
+                        };
+                        Actions.addEventForCurrentUser(event);
+                    },
+
+                    events: props.events
+                });
             },
 
             render: function () {
                 return (
-                    <div id="my-calendar" />
+                    <div />
                 );
             }
         });

@@ -57,6 +57,16 @@
                             name: 'group 1',
                             userIds: [1, 2]
                         }
+                    ],
+                    events: [
+                        {
+                            title: "1",
+                            start: "2016-02-01"
+                        },
+                        {
+                            title: "2",
+                            start: "2016-02-02"
+                        }
                     ]
                 };
             },
@@ -183,7 +193,8 @@
             },
 
             onAddEventForCurrentUser: function (event) {
-                console.log(event);
+                this.state.events.push(event);
+                this.triggerStore();
             },
 
             triggerStore: function () {
