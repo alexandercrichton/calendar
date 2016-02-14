@@ -20,6 +20,32 @@
             GROUPS: 3
         };
 
+        var allUsers = [
+            {
+                userId: 1,
+                name: '1',
+                email: '1',
+                password: '1'
+            },
+            {
+                userId: 2,
+                name: '2',
+                email: '2',
+                password: '2'
+            },
+            {
+                userId: 3,
+                name: '3',
+                email: '3',
+                password: '3'
+            }
+        ];
+
+        var userLinks = {};
+        userLinks[allUsers[0].userId] = [
+            allUsers[1].userId
+        ];
+
         var highestEventId = 1;
 
         var Store = Reflux.createStore({
@@ -32,18 +58,7 @@
                         mainPanel: MAIN_PANEL.USER_DETAILS
                     },
                     users: [
-                        {
-                            userId: 1,
-                            name: '1',
-                            email: '1',
-                            password: '1'
-                        },
-                        {
-                            userId: 2,
-                            name: '2',
-                            email: '2',
-                            password: '2'
-                        }
+
                     ],
                     currentUserId: 0,
                     getCurrentUser: function () {
@@ -86,13 +101,13 @@
             onRegister: function (registerFields) {
                 if (!this.getUserByEmailPassword(registerFields.email, registerFields.password)) {
                     var user = {
-                        userId: this.state.users.length,
+                        userId: allUsers.length,
                         name: registerFields.name,
                         email: registerFields.email,
                         password: registerFields.password
                     };
 
-                    this.state.users.push(user);
+                    allUsers.push(user);
 
                     this.setCurrentUser(user.userId);
                 }
@@ -106,14 +121,26 @@
             },
 
             setCurrentUser: function (userId) {
-                this.state.currentUserId = userId;
-                this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
-                this.onSetMainPanel(MAIN_PANEL.USER_DETAILS);
+                if (userId > 0) {
+                    this.state.currentUserId = userId;
+                    this.updateUsersForCurrentUser();
+                    this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+                    this.onSetMainPanel(MAIN_PANEL.USER_DETAILS);
+                }
+            },
+
+            updateUsersForCurrentUser: function () {
+                var links = userLinks[this.state.currentUserId];
+                if (links) {
+                    for (var i = 0; i < links.length; i++) {
+                        this.state.users.push(this.getUserById(links[i]));
+                    }
+                }
             },
 
             getUserById: function (userId) {
-                for (var i = 0; i < this.state.users.length; i++) {
-                    var user = this.state.users[i];
+                for (var i = 0; i < allUsers.length; i++) {
+                    var user = allUsers[i];
                     if (user.userId === userId) {
                         return user;
                     }
@@ -123,8 +150,8 @@
             },
 
             getUserByEmailPassword: function (email, password) {
-                for (var i = 0; i < this.state.users.length; i++) {
-                    var user = this.state.users[i];
+                for (var i = 0; i < allUsers.length; i++) {
+                    var user = allUsers[i];
                     if (user.email === email && user.password === password) {
                         return user;
                     }
@@ -202,14 +229,14 @@
                 this.triggerStore();
             },
 
-            onRemoveEventForCurrentUser: function (eventId){
+            onRemoveEventForCurrentUser: function (eventId) {
                 this.state.events = this.state.events.filter(function (event) {
                     return event.id !== eventId;
                 });
                 this.triggerStore();
             },
 
-            getNextEventId: function (){
+            getNextEventId: function () {
                 return highestEventId++;
             },
 

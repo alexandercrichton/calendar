@@ -41,6 +41,19 @@
                 });
             },
 
+            addEvent: function (start, end) {
+                var event = {
+                    title: '',
+                    start: start,
+                    end: end
+                };
+                Actions.addEventForCurrentUser(event);
+            },
+
+            removeEvent: function (eventId) {
+                Actions.removeEventForCurrentUser(eventId);
+            },
+
             componentWillReceiveProps: function (newProps) {
                 this.removeMissingEvents(newProps.events);
                 this.renderNewEvents(newProps.events);
@@ -83,19 +96,6 @@
                 return (
                     <div />
                 );
-            },
-
-            addEvent: function (start, end) {
-                var event = {
-                    title: '',
-                    start: start,
-                    end: end
-                };
-                Actions.addEventForCurrentUser(event);
-            },
-
-            removeEvent: function (eventId) {
-                Actions.removeEventForCurrentUser(eventId);
             }
         });
 
