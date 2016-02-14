@@ -17,15 +17,6 @@
 
             componentDidMount: function () {
                 this.node = this.getDOMNode();
-                this.renderCalendar(this.props);
-            },
-
-            componentWillReceiveProps: function (newProps) {
-                this.renderCalendar(newProps);
-            },
-
-            renderCalendar: function (props) {
-                $(this.node).fullCalendar("destroy");
 
                 $(this.node).fullCalendar({
 
@@ -46,14 +37,44 @@
                         Actions.addEventForCurrentUser(event);
                     },
 
-                    events: props.events
+                    eventSources: [this.props.events]
                 });
+            },
+
+            componentWillReceiveProps: function (newProps) {
+                this.renderUnrenderedEvents(newProps.events);
+
+                //for (var i = 0; i < newProps.events.length; i++) {
+                //    var event = newProps.event[i];
+                //    if (!eventTracker.isEventRendered(event)) {
+                //        $(this.node).fullCalendar("renderEvent", event, true);
+                //        eventTracker.addRenderedEvent(event);
+                //    }
+                //}
             },
 
             render: function () {
                 return (
                     <div />
                 );
+            },
+
+            renderUnrenderedEvents: function (events) {
+                var renderedEvents = $(this.node).fullCalendar("clientEvents");
+                for (var i = 0; i < events.length; i++) {
+
+                    var isRendered = false;
+                    for (var j = 0; j < renderedEvents.length; j++) {
+                        if (events[i].id === renderedEvents[j].id) {
+                            isRendered = true;
+                            break;
+                        }
+                    }
+
+                    if (!isRendered) {
+                        $(this.node).fullCalendar("renderEvent", events[i], true);
+                    }
+                }
             }
         });
 

@@ -20,6 +20,8 @@
             GROUPS: 3
         };
 
+        var highestEventId = 1;
+
         var Store = Reflux.createStore({
             listenables: [Actions],
 
@@ -60,10 +62,12 @@
                     ],
                     events: [
                         {
+                            id: this.getNextEventId(),
                             title: "1",
                             start: "2016-02-01"
                         },
                         {
+                            id: this.getNextEventId(),
                             title: "2",
                             start: "2016-02-02"
                         }
@@ -193,8 +197,13 @@
             },
 
             onAddEventForCurrentUser: function (event) {
+                event.id = this.getNextEventId();
                 this.state.events.push(event);
                 this.triggerStore();
+            },
+
+            getNextEventId: function (){
+                return highestEventId++;
             },
 
             triggerStore: function () {
