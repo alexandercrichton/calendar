@@ -17,6 +17,7 @@
 
             componentDidMount: function () {
                 this.node = this.getDOMNode();
+                var self = this;
 
                 $(this.node).fullCalendar({
 
@@ -29,42 +30,43 @@
                     selectable: true,
 
                     select: function (start, end, jsEvent) {
-                        var event = {
-                            title: '',
-                            start: start,
-                            end: end
-                        };
-                        Actions.addEventForCurrentUser(event);
+                        self.addEvent(start, end);
                     },
 
-                    eventSources: [this.props.events]
+                    eventClick: function (event, jsEevnt, view) {
+                        self.removeEvent(event.id);
+                    },
+
+                    events: self.props.events
                 });
             },
 
             componentWillReceiveProps: function (newProps) {
-                this.renderUnrenderedEvents(newProps.events);
-
-                //for (var i = 0; i < newProps.events.length; i++) {
-                //    var event = newProps.event[i];
-                //    if (!eventTracker.isEventRendered(event)) {
-                //        $(this.node).fullCalendar("renderEvent", event, true);
-                //        eventTracker.addRenderedEvent(event);
-                //    }
-                //}
+                this.removeMissingEvents(newProps.events);
+                this.renderNewEvents(newProps.events);
             },
 
-            render: function () {
-                return (
-                    <div />
-                );
+            removeMissingEvents: function (events) {
+                $(this.node).fullCalendar("removeEvents", function (renderedEvent) {
+
+                    for (var i = 0; i < events.length; i++) {
+                        if (renderedEvent.id === events[i].id) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
             },
 
-            renderUnrenderedEvents: function (events) {
+            renderNewEvents: function (events) {
                 var renderedEvents = $(this.node).fullCalendar("clientEvents");
-                for (var i = 0; i < events.length; i++) {
 
+                for (var i = 0; i < events.length; i++) {
                     var isRendered = false;
+
                     for (var j = 0; j < renderedEvents.length; j++) {
+
                         if (events[i].id === renderedEvents[j].id) {
                             isRendered = true;
                             break;
@@ -75,6 +77,25 @@
                         $(this.node).fullCalendar("renderEvent", events[i], true);
                     }
                 }
+            },
+
+            render: function () {
+                return (
+                    <div />
+                );
+            },
+
+            addEvent: function (start, end) {
+                var event = {
+                    title: '',
+                    start: start,
+                    end: end
+                };
+                Actions.addEventForCurrentUser(event);
+            },
+
+            removeEvent: function (eventId) {
+                Actions.removeEventForCurrentUser(eventId);
             }
         });
 

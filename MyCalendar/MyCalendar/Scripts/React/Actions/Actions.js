@@ -21,7 +21,8 @@
             "viewPerson",
             "saveUserDetails",
 
-            "addEventForCurrentUser"
+            "addEventForCurrentUser",
+            "removeEventForCurrentUser"
 
         ]);
 

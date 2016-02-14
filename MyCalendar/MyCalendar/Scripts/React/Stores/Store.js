@@ -202,6 +202,13 @@
                 this.triggerStore();
             },
 
+            onRemoveEventForCurrentUser: function (eventId){
+                this.state.events = this.state.events.filter(function (event) {
+                    return event.id !== eventId;
+                });
+                this.triggerStore();
+            },
+
             getNextEventId: function (){
                 return highestEventId++;
             },
