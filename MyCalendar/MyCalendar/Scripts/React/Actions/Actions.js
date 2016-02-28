@@ -20,6 +20,7 @@
 
             "viewPerson",
             "saveUserDetails",
+            "addLinkToSelectedEmail",
 
             "addEventForCurrentUser",
             "removeEventForCurrentUser"

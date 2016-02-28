@@ -44,8 +44,7 @@
         var userLinks = {};
 
         var person1Links = [
-            allUsers[1].userId,
-            allUsers[2].userId
+            allUsers[1].userId
         ];
         userLinks[allUsers[0].userId] = person1Links;
 
@@ -56,7 +55,6 @@
 
             init: function () {
                 this.state = {
-
                     ui: {
                         menuPanel: MENU_PANEL.ACCOUNT,
                         mainPanel: MAIN_PANEL.USER_DETAILS
@@ -182,6 +180,17 @@
                 return null;
             },
 
+            getUserByEmail: function (email) {
+                for (var i = 0; i < allUsers.length; i++) {
+                    var user = allUsers[i];
+                    if (user.email === email) {
+                        return user;
+                    }
+                }
+
+                return null;
+            },
+
             getUserByEmailPassword: function (email, password) {
                 for (var i = 0; i < allUsers.length; i++) {
                     var user = allUsers[i];
@@ -252,6 +261,15 @@
                 if (this.isUserLoggedIn()) {
                     var currentUser = this.state.getCurrentUser();
                     Object.assign(currentUser, userDetails);
+                    this.triggerStore();
+                }
+            },
+
+            onAddLinkToSelectedEmail: function (email) {
+                var user = this.getUserByEmail(email);
+                if (user) {
+                    userLinks[this.state.currentUserId].push(user.userId)
+                    this.updateUsersForCurrentUser();
                     this.triggerStore();
                 }
             },
