@@ -131,7 +131,7 @@
             onRegister: function (registerFields) {
                 if (!this.getUserByEmailPassword(registerFields.email, registerFields.password)) {
                     var user = {
-                        userId: allUsers.length,
+                        userId: allUsers.length + 1,
                         name: registerFields.name,
                         email: registerFields.email,
                         password: registerFields.password
@@ -268,6 +268,10 @@
             onAddLinkToSelectedEmail: function (email) {
                 var user = this.getUserByEmail(email);
                 if (user) {
+                    if (userLinks[this.state.currentUserId] === undefined) {
+                        userLinks[this.state.currentUserId] = [];
+                    }
+
                     userLinks[this.state.currentUserId].push(user.userId)
                     this.updateUsersForCurrentUser();
                     this.triggerStore();
