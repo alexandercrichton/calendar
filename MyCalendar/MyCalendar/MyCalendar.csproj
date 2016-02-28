@@ -196,6 +196,7 @@
     <Content Include="Scripts\React\Components\General\Fields\LabelField.jsx" />
     <Content Include="Scripts\jquery-2.2.0.min.map" />
     <Content Include="Scripts\React\Components\General\Buttons\AddButton.jsx" />
+    <Content Include="Scripts\React\Components\General\Buttons\RemoveButton.jsx" />
     <None Include="Scripts\React\Components\Menu\Menu.jsx" />
     <Content Include="Scripts\React\Actions\Actions.js" />
     <Content Include="Scripts\text.js" />

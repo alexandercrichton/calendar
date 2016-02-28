@@ -278,6 +278,15 @@
                 }
             },
 
+            onRemoveLinkForPerson: function (userId) {
+                var links = userLinks[this.state.currentUserId];
+                userLinks[this.state.currentUserId] = links.filter(function (link) {
+                    return (link !== userId);
+                });
+                this.updateUsersForCurrentUser();
+                this.triggerStore();
+            },
+
             onAddEventForCurrentUser: function (event) {
                 event.id = this.getNextEventId();
                 event.userId = this.state.currentUserId;

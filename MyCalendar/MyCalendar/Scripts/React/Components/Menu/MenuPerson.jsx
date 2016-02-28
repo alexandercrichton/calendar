@@ -1,11 +1,13 @@
 ﻿define(
     [
-        'react',
-        "Actions"
+        "react",
+        "Actions",
+        "jsx!React/Components/General/Buttons/RemoveButton"
     ],
     function (
         React,
-        Actions
+        Actions,
+        RemoveButton
     ) {
         var MenuPerson = React.createClass({
 
@@ -24,6 +26,7 @@
                 return (
                     <a href="/" onClick={this.onClick}>
                         <p className={className}>{this.props.name}</p>
+                        <RemoveButton onClick={this.onRemove} />
                     </a>
                 );
             },
@@ -31,6 +34,11 @@
             onClick: function (e) {
                 e.preventDefault();
                 Actions.viewPerson(this.props.userId);
+            },
+
+            onRemove: function (e) {
+                e.preventDefault();
+                Actions.removeLinkForPerson(this.props.userId);
             }
         });
 

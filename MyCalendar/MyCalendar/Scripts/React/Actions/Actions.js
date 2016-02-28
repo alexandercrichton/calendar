@@ -21,6 +21,7 @@
             "viewPerson",
             "saveUserDetails",
             "addLinkToSelectedEmail",
+            "removeLinkForPerson",
 
             "addEventForCurrentUser",
             "removeEventForCurrentUser"
