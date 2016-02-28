@@ -35,7 +35,9 @@
                     },
 
                     eventClick: function (event, jsEevnt, view) {
-                        self.removeEvent(event.id);
+                        if (event.userId === self.props.currentUserId) {
+                            self.removeEvent(event.id);
+                        }
                     },
 
                     events: self.props.events,
