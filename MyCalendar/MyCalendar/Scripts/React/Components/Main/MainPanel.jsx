@@ -22,16 +22,19 @@
             render: function () {
 
                 var panel;
+                var currentUser = this.state.getCurrentUser();
                 if (this.state.ui.mainPanel === 1) {
-                    var currentUser = this.state.getCurrentUser();
                     if (currentUser) {
-                        panel = (<EditUserPanel />);
+                        panel = (<EditUserPanel currentUser={currentUser}
+                                                currentUserEvents={this.state.getEventsForCurrentUser()}/>);
                     }
                 }
                 else if (this.state.ui.mainPanel === 2) {
                     var selectedUser = this.state.getCurrentSelectedUser();
-                    if (selectedUser) {
-                        panel = <PersonPanel user={selectedUser } />;
+                    if (selectedUser && currentUser) {
+                        panel = <PersonPanel currentUserId={currentUser.userId}
+                                             selectedUser={selectedUser } 
+                                             combinedEvents={this.state.getCombinedEventsWithSelectedUser()}/>;
                     }
                 }
 

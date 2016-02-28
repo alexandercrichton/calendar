@@ -1,22 +1,30 @@
 ﻿define(
     [
         'react',
-        'jsx!React/Components/People/PersonForm'
+        'jsx!React/Components/People/PersonForm',
+        'jsx!React/Components/Calendar/Calendar'
     ],
     function (
         React,
-        PersonForm
+        PersonForm,
+        Calendar
     ) {
         var PersonPanel = React.createClass({
 
             propTypes: {
-                user: React.PropTypes.object.isRequired
+                currentUserId: React.PropTypes.number.isRequired,
+                selectedUser: React.PropTypes.object.isRequired,
+                combinedEvents: React.PropTypes.array.isRequired
             },
 
             render: function () {
                 return (
-                    <PersonForm name={this.props.user.name}
-                                email={this.props.user.email} />
+                    <div>
+                        <PersonForm name={this.props.selectedUser.name}
+                                    email={this.props.selectedUser.email} />
+                        <Calendar currentUserId={this.props.currentUserId}
+                                  events={this.props.combinedEvents} />
+                    </div>
                 );
             }
         });

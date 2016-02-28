@@ -56,21 +56,28 @@
 
             init: function () {
                 this.state = {
+
                     ui: {
                         menuPanel: MENU_PANEL.ACCOUNT,
                         mainPanel: MAIN_PANEL.USER_DETAILS
                     },
+
                     users: [
 
                     ],
+
                     currentUserId: 0,
+
                     getCurrentUser: function () {
                         return this.getUserById(this.state.currentUserId);
                     }.bind(this),
+
                     currentSelectedUserId: 0,
+
                     getCurrentSelectedUser: function () {
                         return this.getUserById(this.state.currentSelectedUserId);
                     }.bind(this),
+
                     groups: [
                         {
                             groupId: 1,
@@ -78,6 +85,7 @@
                             userIds: [1, 2]
                         }
                     ],
+
                     events: [
                         {
                             id: this.getNextEventId(),
@@ -97,7 +105,20 @@
                             title: "3",
                             start: "2016-02-03"
                         }
-                    ]
+                    ],
+
+                    getEventsForCurrentUser: function () {
+                        return this.state.events.filter(function (event) {
+                            return (event.userId === this.state.currentUserId);
+                        }.bind(this));
+                    }.bind(this),
+
+                    getCombinedEventsWithSelectedUser: function () {
+                        return this.state.events.filter(function (event) {
+                            return (event.userId === this.state.currentUserId
+                                || event.userId === this.state.currentSelectedUserId);
+                        }.bind(this));
+                    }.bind(this)
                 };
             },
 
