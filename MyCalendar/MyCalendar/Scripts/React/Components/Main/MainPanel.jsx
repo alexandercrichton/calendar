@@ -25,7 +25,7 @@
                 if (this.state.ui.mainPanel === 1) {
                     var currentUser = this.state.getCurrentUser();
                     if (currentUser) {
-                        panel = <EditUserPanel />;
+                        panel = (<EditUserPanel />);
                     }
                 }
                 else if (this.state.ui.mainPanel === 2) {

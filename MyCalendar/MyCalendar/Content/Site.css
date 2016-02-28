@@ -45,3 +45,11 @@ a {
 .person-selected {
     font-weight: bold;
 }
+
+.my-event {
+    background-color: #88a8ea;
+}
+
+.their-event {
+    background-color: #d1d1d1;
+}

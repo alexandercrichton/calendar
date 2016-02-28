@@ -42,9 +42,12 @@
         ];
 
         var userLinks = {};
-        userLinks[allUsers[0].userId] = [
-            allUsers[1].userId
+
+        var person1Links = [
+            allUsers[1].userId,
+            allUsers[2].userId
         ];
+        userLinks[allUsers[0].userId] = person1Links;
 
         var highestEventId = 1;
 
@@ -78,13 +81,21 @@
                     events: [
                         {
                             id: this.getNextEventId(),
+                            userId: allUsers[0].userId,
                             title: "1",
                             start: "2016-02-01"
                         },
                         {
                             id: this.getNextEventId(),
+                            userId: allUsers[0].userId,
                             title: "2",
                             start: "2016-02-02"
+                        },
+                        {
+                            id: this.getNextEventId(),
+                            userId: allUsers[1].userId,
+                            title: "3",
+                            start: "2016-02-03"
                         }
                     ]
                 };
@@ -130,6 +141,7 @@
             },
 
             updateUsersForCurrentUser: function () {
+                this.state.users = [];
                 var links = userLinks[this.state.currentUserId];
                 if (links) {
                     for (var i = 0; i < links.length; i++) {
@@ -225,6 +237,7 @@
 
             onAddEventForCurrentUser: function (event) {
                 event.id = this.getNextEventId();
+                event.userId = this.state.currentUserId;
                 this.state.events.push(event);
                 this.triggerStore();
             },

@@ -12,6 +12,7 @@
         var Calendar = React.createClass({
 
             propTypes: {
+                currentUserId: React.PropTypes.number.isRequired,
                 events: React.PropTypes.array.isRequired
             },
 
@@ -37,7 +38,11 @@
                         self.removeEvent(event.id);
                     },
 
-                    events: self.props.events
+                    events: self.props.events,
+
+                    eventRender: function (event, element) {
+                        self.styleEvent(event, element);
+                    }
                 });
             },
 
@@ -89,6 +94,15 @@
                     if (!isRendered) {
                         $(this.node).fullCalendar("renderEvent", events[i], true);
                     }
+                }
+            },
+
+            styleEvent: function (event, element) {
+                if (event.userId === this.props.currentUserId) {
+                    $(element).addClass("my-event");
+                }
+                else {
+                    $(element).addClass("their-event");
                 }
             },
 

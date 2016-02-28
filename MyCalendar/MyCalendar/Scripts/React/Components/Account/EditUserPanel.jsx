@@ -27,9 +27,16 @@
                         <EditUserForm initialName={user.name}
                                       initialEmail={user.email}
                                       initialPassword={user.password} />
-                        <Calendar events={this.state.events}/>
+                        <Calendar currentUserId={user.userId}
+                                  events={this.getEventsForCurrentUser()} />
                     </div>
                 );
+            },
+
+            getEventsForCurrentUser: function () {
+                return this.state.events.filter(function (event) {
+                    return (event.userId === this.state.getCurrentUser().userId);
+                }.bind(this));
             }
         });
 
