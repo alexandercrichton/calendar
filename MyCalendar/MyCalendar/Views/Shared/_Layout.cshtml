@@ -4,14 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.css" />
-    <link rel="stylesheet" href="@Url.Content("~/Content/site.css")" />
+    <link rel="stylesheet" href="@Url.Content(" ~/Content/site.css")" />
 
-    @*<script src="@Url.Content("~/Scripts/jquery-2.0.0.js")"></script>*@
-    @*<script src="@Url.Content("~/Scripts/moment.js")"></script>*@
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.js"></script>*@
-    <script data-main="@Url.Content("~/Scripts/main")" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js"></script>
+    
+    <script src="@Url.Content(" ~/Scripts/jquery-2.0.0.js")"></script>
+    
+    <script src="@Url.Content(" ~/Scripts/moment.js")"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.js"></script>
 </head>
 <body class="absolute-container">
     @RenderBody()
+
+    <script src="@Url.Content("~/Scripts/app/build/bundle.js")"></script>
 </body>
 </html>
