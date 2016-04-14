@@ -1,24 +1,55 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿* {
+    /*border: 0px solid;*/
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+body {
+    margin: 0;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+a {
+    display: block;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+    a:hover {
+        background-color: #fff;
+    }
+
+.absolute-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.menu {
+    width: 33%;
+    height: 100%;
+    max-width: 400px;
+    float: left;
+    background-color: #eee;
+}
+
+.menu-header-option {
+    width: 33%;
+    float: left;
+}
+
+.menu-header-option-select {
+    font-weight: bold;
+}
+
+.main-panel {
+    width: 66%;
+    float: left;
+}
+
+.person-selected {
+    font-weight: bold;
+}
+
+.my-event {
+    background-color: #88a8ea;
+}
+
+.their-event {
+    background-color: #d1d1d1;
 }

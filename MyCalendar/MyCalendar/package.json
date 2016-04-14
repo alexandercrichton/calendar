@@ -8,7 +8,10 @@
   },
   "dependencies": {
     "react": "15.0.1",
-    "react-dom": "15.0.1"
+    "react-dom": "15.0.1",
+    "reflux": "0.4.1",
+    "fullcalendar": "2.7.0-beta",
+    "jquery": "2.2.3"
   },
   "devDependencies": {
     "webpack": "1.12.15",
