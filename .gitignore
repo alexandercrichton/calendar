@@ -1,0 +1,10 @@
+Web.Debug.config
+Web.Release.config
+bin
+obj
+MyCalendar.csproj.user
+Web.config
+.vs
+packages
+node_modules
+/MyCalendar/MyCalendar/*.log

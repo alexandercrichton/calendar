@@ -2,28 +2,24 @@
 
 export default {
     onRegister: function (registerFields) {
-        if (!this.getUserByEmailPassword(registerFields.email, registerFields.password)) {
-            var user = {
-                userId: allUsers.length + 1,
-                name: registerFields.name,
-                email: registerFields.email,
-                password: registerFields.password
-            };
+        var user = {
+            Name: registerFields.name,
+            Email: registerFields.email,
+            Password: registerFields.password
+        };
 
-            allUsers.push(user);
-
-            this.setCurrentUser(user.userId);
-        }
+        $.post("Login/Register", user)
+            .done(function (data) {
+                console.log(data);
+                this.setCurrentUser(data);
+            }.bind(this))
     },
 
     onLogin: function (loginFields) {
-        $.post(
-            "User/Login",
-            loginFields,
-            function (data) {
+        $.post("User/Login", loginFields)
+            .done(function (data) {
                 console.log(data);
-            }
-        );
+            });
 
         //var user = this.getUserByEmailPassword(loginFields.email, loginFields.password);
         //if (user) {
@@ -52,7 +48,7 @@ export default {
                 userLinks[this.state.currentUserId] = [];
             }
 
-            userLinks[this.state.currentUserId].push(user.userId)
+            userLinks[this.state.currentUserId].push(user.UserId)
             this.updateUsersForCurrentUser();
             this.triggerStore();
         }
@@ -69,7 +65,7 @@ export default {
 
     onAddEventForCurrentUser: function (event) {
         event.id = this.getNextEventId();
-        event.userId = this.state.currentUserId;
+        event.UserId = this.state.currentUserId;
         this.state.events.push(event);
         this.triggerStore();
     },

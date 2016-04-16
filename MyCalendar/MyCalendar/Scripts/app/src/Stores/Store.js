@@ -21,36 +21,6 @@ const MENU_PANEL = {
     GROUPS: 3
 };
 
-let allUsers = [
-    {
-        userId: 1,
-        name: '1',
-        email: '1',
-        password: '1'
-    },
-    {
-        userId: 2,
-        name: '2',
-        email: '2',
-        password: '2'
-    },
-    {
-        userId: 3,
-        name: '3',
-        email: '3',
-        password: '3'
-    }
-];
-
-let userLinks = {};
-
-let person1Links = [
-    allUsers[1].userId
-];
-userLinks[allUsers[0].userId] = person1Links;
-
-let highestEventId = 1;
-
 let Store = $.extend(
     {}, 
     StoreViewExtensions, 
@@ -65,9 +35,7 @@ let Store = $.extend(
                     mainPanel: MAIN_PANEL.USER_DETAILS
                 },
 
-                users: [
-
-                ],
+                users: [],
 
                 currentUserId: 0,
 
@@ -81,45 +49,20 @@ let Store = $.extend(
                     return this.getUserById(this.state.currentSelectedUserId);
                 }.bind(this),
 
-                groups: [
-                    {
-                        groupId: 1,
-                        name: 'group 1',
-                        userIds: [1, 2]
-                    }
-                ],
+                groups: [],
 
-                events: [
-                    {
-                        id: this.getNextEventId(),
-                        userId: allUsers[0].userId,
-                        title: "1",
-                        start: "2016-02-01"
-                    },
-                    {
-                        id: this.getNextEventId(),
-                        userId: allUsers[0].userId,
-                        title: "2",
-                        start: "2016-02-02"
-                    },
-                    {
-                        id: this.getNextEventId(),
-                        userId: allUsers[1].userId,
-                        title: "3",
-                        start: "2016-02-03"
-                    }
-                ],
+                events: [],
 
                 getEventsForCurrentUser: function () {
                     return this.state.events.filter(function (event) {
-                        return (event.userId === this.state.currentUserId);
+                        return (event.UserId === this.state.currentUserId);
                     }.bind(this));
                 }.bind(this),
 
                 getCombinedEventsWithSelectedUser: function () {
                     return this.state.events.filter(function (event) {
-                        return (event.userId === this.state.currentUserId
-                            || event.userId === this.state.currentSelectedUserId);
+                        return (event.UserId === this.state.currentUserId
+                            || event.UserId === this.state.currentSelectedUserId);
                     }.bind(this));
                 }.bind(this)
             };
@@ -134,11 +77,13 @@ let Store = $.extend(
         },
 
         setCurrentUser: function (userId) {
-            if (userId > 0) {
-                this.state.currentUserId = userId;
-                this.updateUsersForCurrentUser();
-                this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
-                this.onSetMainPanel(MAIN_PANEL.USER_DETAILS);
+            if (userId) {
+                $.get("Home/GetViewData?userId=" + userId)
+                    .done(function (data) {
+                        console.log("GetViewData");
+                        this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+                        this.onSetMainPanel(MAIN_PANEL.USER_DETAILS);
+                    });
             }
         },
 
@@ -153,9 +98,9 @@ let Store = $.extend(
         },
 
         getUserById: function (userId) {
-            for (let i = 0; i < allUsers.length; i++) {
-                let user = allUsers[i];
-                if (user.userId === userId) {
+            for (let i = 0; i < this.state.users.length; i++) {
+                let user = this.state.users[i];
+                if (user.UserId === userId) {
                     return user;
                 }
             }
@@ -164,20 +109,9 @@ let Store = $.extend(
         },
 
         getUserByEmail: function (email) {
-            for (let i = 0; i < allUsers.length; i++) {
-                let user = allUsers[i];
-                if (user.email === email) {
-                    return user;
-                }
-            }
-
-            return null;
-        },
-
-        getUserByEmailPassword: function (email, password) {
-            for (let i = 0; i < allUsers.length; i++) {
-                let user = allUsers[i];
-                if (user.email === email && user.password === password) {
+            for (let i = 0; i < this.state.users.length; i++) {
+                let user = this.state.users[i];
+                if (user.Email === email) {
                     return user;
                 }
             }

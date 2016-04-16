@@ -1,7 +1,9 @@
-﻿using System;
+﻿using MyCalendar.Infrastructure;
+using MyCalendar.Models;
+using MyCalendar.Models.Home;
+using MyCalendar.Models.User;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MyCalendar.Controllers
@@ -13,18 +15,17 @@ namespace MyCalendar.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public StrongJsonResult<ViewDataModel> GetViewData(int? userId)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            using (var db = new MyCalendarDbContext())
+            {
+                var currentUser = db.Users.FirstOrDefault(u => u.UserId == userId);
+                var model = new ViewDataModel
+                {
+                    Users = new List<UserViewModel> { new UserViewModel(currentUser) }
+                };
+                return StrongJsonResult.From(model);
+            }
         }
     }
 }

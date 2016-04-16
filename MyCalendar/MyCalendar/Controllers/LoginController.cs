@@ -1,24 +1,29 @@
 ﻿using MyCalendar.Infrastructure;
-using System.Linq;
+using MyCalendar.Infrastructure.Model;
+using MyCalendar.Models;
+using MyCalendar.Models.Login;
 using System.Web.Mvc;
 
 namespace MyCalendar.Controllers
 {
     public class LoginController : Controller
     {
-        // GET: Login
-        public ActionResult Index()
+
+        public StrongJsonResult<int?> Register(RegisterModel model)
         {
             using (var db = new MyCalendarDbContext())
             {
-                var user = db.Users.FirstOrDefault();
-                db.Users.Add(new Infrastructure.Model.User
+                var user = new User
                 {
-                    Name = "2",
-                    Email = "2",
-                    Password = "2"
-                });
-                return View();
+                    Name = model.Name,
+                    Email = model.Email,
+                    Password = model.Password
+                };
+
+                db.Users.Add(user);
+                db.SaveChanges();
+
+                return StrongJsonResult.From(user.UserId);
             }
         }
     }
