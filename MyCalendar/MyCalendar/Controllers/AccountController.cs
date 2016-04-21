@@ -57,7 +57,7 @@ namespace MyCalendar.Controllers
             using (var db = new MyCalendarDbContext())
             {
                 var fromUser = db.Users.FirstOrDefault(u => u.UserId == fromUserId);
-                if (fromUserId != null)
+                if (fromUser != null)
                 {
                     var toUser = db.Users.FirstOrDefault(u => u.Email == toEmail && u.UserId != fromUser.UserId);
                     if (toUser != null)
@@ -72,6 +72,23 @@ namespace MyCalendar.Controllers
                             return StrongJsonResult.From(new UserViewModel(toUser));
                         }
                     }
+                }
+
+                return null;
+            }
+        }
+
+        public StrongJsonResult<int?> UnlinkUserFromUser(int? fromUserId, int? toUserId)
+        {
+            using (var db = new MyCalendarDbContext())
+            {
+                var link = db.UserLinks.FirstOrDefault(l => l.FromUserId == fromUserId
+                    && l.ToUserId == toUserId);
+                if (link != null)
+                {
+                    db.UserLinks.Remove(link);
+                    db.SaveChanges();
+                    return StrongJsonResult.From(link.UserLinkId);
                 }
 
                 return null;

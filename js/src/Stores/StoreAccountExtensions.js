@@ -67,12 +67,17 @@ export default {
     },
 
     onRemoveLinkForPerson: function (userId) {
-        var links = userLinks[this.state.currentUserId];
-        userLinks[this.state.currentUserId] = links.filter(function (link) {
-            return (link !== userId);
-        });
-        this.updateUsersForCurrentUser();
-        this.triggerStore();
+        const removedUser = this.removeUserById(userId);
+        if (removedUser) {
+            this.triggerStore();
+
+            const postData = {
+                fromUserId: this.state.currentUserId,
+                toUserId: userId
+            };
+
+            $.post("Account/UnlinkUserFromUser", postData)
+        }
     },
 
     getUserById: function (userId) {
@@ -95,6 +100,25 @@ export default {
         }
 
         return null;
+    },
+
+    removeUserById: function (id) {
+        const index = this.getIndexofUserById(id);
+        if (index) {
+            return this.state.users.splice(index, 1);
+        }
+
+        return null;
+    },
+
+    getIndexofUserById: function (id) {
+        for (let i = 0; i < this.state.users.length; i++) {
+            if (this.state.users[i].UserId === id) {
+                return i;
+            }
+        }
+
+        return -1;
     },
 
     getOtherUsers: function () {
