@@ -1,4 +1,6 @@
 ﻿import React from "react";
+import ReactDOM from "react-dom";
+import $ from "jquery";
 import "fullCalendar";
 
 import Actions from "../../Actions/Actions";
@@ -11,7 +13,7 @@ export default React.createClass({
     },
 
     componentDidMount: function () {
-        this.node = this.getDOMNode();
+        this.node = ReactDOM.findDOMNode(this);
         var self = this;
 
         $(this.node).fullCalendar({

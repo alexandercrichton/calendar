@@ -134,6 +134,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Home\ViewDataModel.cs" />
+    <Compile Include="Models\Login\LoginModel.cs" />
     <Compile Include="Models\Login\RegisterModel.cs" />
     <Compile Include="Models\StrongJsonResult.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />

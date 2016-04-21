@@ -33,10 +33,14 @@ export default React.createClass({
     renderAddPersonForm: function () {
         return (
             <div>
-                <TextBoxField label='Add person by email'
-                value={this.state.selectedEmail}
-                onChange={this.onEmailChange } />
-                <AddButton onClick={this.onAddPerson} />
+                <TextBoxField 
+                    label='Add person by email'
+                    value={this.state.selectedEmail}
+                    onChange={this.onEmailChange } 
+                />
+                <AddButton 
+                    onClick={this.onAddPerson} 
+                />
             </div>
         );
     },
@@ -53,8 +57,12 @@ export default React.createClass({
     renderPeople: function () {
         return this.props.users.map(function (user, i) {
             return (
-                <MenuPerson name={user.name} userId={user.userId} key={i}
-                            isSelected={this.props.selectedUserId === user.userId} />
+                <MenuPerson 
+                    name={user.Name} 
+                    userId={user.UserId} 
+                    key={user.UserId}
+                    isSelected={this.props.selectedUserId === user.UserId} 
+                />
             );
         }, this)
     }

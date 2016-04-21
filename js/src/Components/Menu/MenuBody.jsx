@@ -2,6 +2,7 @@
 import Reflux from "reflux";
 
 import Store from "../../Stores/Store";
+import * as Constants from "../../Constants";
 
 import MenuAccountPanel from "./MenuAccountPanel.jsx";
 import MenuPeoplePanel from "./MenuPeoplePanel.jsx";
@@ -22,11 +23,11 @@ export default React.createClass({
     },
 
     renderCurrentPanel: function () {
-        if (this.state.data.ui.menuPanel === 1) {
+        if (this.state.data.ui.menuPanel === Constants.Panel.Menu.ACCOUNT) {
             return (
                 <MenuAccountPanel currentUser={this.state.data.getCurrentUser()} />
             );
-        } else if (this.state.data.ui.menuPanel === 2) {
+        } else if (this.state.data.ui.menuPanel === Constants.Panel.Menu.PEOPLE) {
             return (
                 <MenuPeoplePanel users={this.state.data.users} selectedUserId={this.state.data.currentSelectedUserId} />
             );

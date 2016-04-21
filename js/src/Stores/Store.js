@@ -2,24 +2,13 @@
 import $ from "jquery";
 
 import Actions from "../Actions/Actions";
+import * as Constants from "../Constants";
 
 import StoreViewExtensions from "./StoreViewExtensions";
 import StoreDataExtensions from "./StoreDataExtensions";
 
 
-const MAIN_PANEL = {
-    NONE: 0,
-    USER_DETAILS: 1,
-    PERSON: 2,
-    GROUP: 3
-};
 
-const MENU_PANEL = {
-    NONE: 0,
-    ACCOUNT: 1,
-    PEOPLE: 2,
-    GROUPS: 3
-};
 
 let Store = $.extend(
     {}, 
@@ -31,8 +20,8 @@ let Store = $.extend(
         init: function () {
             this.state = {
                 ui: {
-                    menuPanel: MENU_PANEL.ACCOUNT,
-                    mainPanel: MAIN_PANEL.USER_DETAILS
+                    menuPanel: Constants.Panel.Menu.ACCOUNT,
+                    mainPanel: Constants.Panel.Main.USER_DETAILS
                 },
 
                 users: [],
@@ -76,15 +65,20 @@ let Store = $.extend(
             return this.state.currentUserId > 0;
         },
 
-        setCurrentUser: function (userId) {
+        getViewData: function (userId) {
             if (userId) {
+                const done = this.applyViewData.bind(this);
                 $.get("Home/GetViewData?userId=" + userId)
-                    .done(function (data) {
-                        console.log("GetViewData");
-                        this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
-                        this.onSetMainPanel(MAIN_PANEL.USER_DETAILS);
-                    });
+                    .done(done);
             }
+        },
+
+        applyViewData: function (data) {
+            this.state.currentUserId = data.CurrentUserId;
+            this.state.users = data.Users;
+            this.onSetMenuPanel(Constants.Panel.Menu.ACCOUNT);
+            this.onSetMainPanel(Constants.Panel.Main.USER_DETAILS);
+            this.triggerStore();
         },
 
         updateUsersForCurrentUser: function () {
@@ -117,10 +111,6 @@ let Store = $.extend(
             }
 
             return null;
-        },
-
-        getNextEventId: function () {
-            return highestEventId++;
         },
 
         triggerStore: function () {

@@ -1,5 +1,7 @@
 ﻿import $ from "jquery";
 
+import * as Constants from "../Constants";
+
 export default {
     onRegister: function (registerFields) {
         var user = {
@@ -11,25 +13,20 @@ export default {
         $.post("Login/Register", user)
             .done(function (data) {
                 console.log(data);
-                this.setCurrentUser(data);
+                this.getViewData(data);
             }.bind(this))
     },
 
     onLogin: function (loginFields) {
-        $.post("User/Login", loginFields)
+        $.post("Login/Login", loginFields)
             .done(function (data) {
-                console.log(data);
-            });
-
-        //var user = this.getUserByEmailPassword(loginFields.email, loginFields.password);
-        //if (user) {
-        //    this.setCurrentUser(user.userId);
-        //}
+                this.getViewData(data);
+            }.bind(this));
     },
 
     onLogout: function () {
         this.state.currentUserId = 0;
-        this.onSetMainPanel(MAIN_PANEL.NONE);
+        this.onSetMainPanel(Constants.Panel.Main.NONE);
         this.triggerStore();
     },
 
@@ -68,6 +65,10 @@ export default {
         event.UserId = this.state.currentUserId;
         this.state.events.push(event);
         this.triggerStore();
+    },
+
+    getNextEventId: function () {
+        return highestEventId++;
     },
 
     onRemoveEventForCurrentUser: function (eventId) {

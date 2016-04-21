@@ -22,7 +22,8 @@ namespace MyCalendar.Controllers
                 var currentUser = db.Users.FirstOrDefault(u => u.UserId == userId);
                 var model = new ViewDataModel
                 {
-                    Users = new List<UserViewModel> { new UserViewModel(currentUser) }
+                    Users = new List<UserViewModel> { new UserViewModel(currentUser) },
+                    CurrentUserId = currentUser.UserId
                 };
                 return StrongJsonResult.From(model);
             }

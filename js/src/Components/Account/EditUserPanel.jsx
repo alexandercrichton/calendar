@@ -14,10 +14,10 @@ export default React.createClass({
     render: function () {
         return (
             <div>
-                <EditUserForm initialName={this.props.currentUser.name}
-                              initialEmail={this.props.currentUser.email}
-                              initialPassword={this.props.currentUser.password} />
-                <Calendar currentUserId={this.props.currentUser.userId}
+                <EditUserForm initialName={this.props.currentUser.Name}
+                              initialEmail={this.props.currentUser.Email}
+                              initialPassword={this.props.currentUser.Password} />
+                <Calendar currentUserId={this.props.currentUser.UserId}
                           events={this.props.currentUserEvents} />
             </div>
         );

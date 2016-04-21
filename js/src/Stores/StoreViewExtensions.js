@@ -1,5 +1,7 @@
 ﻿import $ from "jquery";
 
+import * as Constants from "../Constants";
+
 export default {
     onSetMenuPanel: function (panel) {
         if (this.isUserLoggedIn()) {
@@ -12,19 +14,19 @@ export default {
 
     onShowMenuAccountPanel: function () {
         if (this.isUserLoggedIn()) {
-            this.onSetMenuPanel(MENU_PANEL.ACCOUNT);
+            this.onSetMenuPanel(Constants.Panel.Menu.ACCOUNT);
         }
     },
 
     onShowMenuPeoplePanel: function () {
         if (this.isUserLoggedIn()) {
-            this.onSetMenuPanel(MENU_PANEL.PEOPLE);
+            this.onSetMenuPanel(Constants.Panel.Menu.PEOPLE);
         }
     },
 
     onShowMenuGroupsPanel: function () {
         if (this.isUserLoggedIn()) {
-            this.onSetMenuPanel(MENU_PANEL.GROUPS);
+            this.onSetMenuPanel(Constants.Panel.Menu.GROUPS);
         }
     },
 
@@ -36,7 +38,7 @@ export default {
     },
 
     onShowMainPersonPanel: function () {
-        this.onSetMainPanel(MAIN_PANEL.PERSON);
+        this.onSetMainPanel(Constants.Panel.Main.PERSON);
     },
 
     onViewPerson: function (userId) {
