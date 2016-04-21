@@ -10,7 +10,7 @@ export default {
             Password: registerFields.password
         };
 
-        $.post("Login/Register", user)
+        $.post("Account/Register", user)
             .done(function (data) {
                 console.log(data);
                 this.getViewData(data);
@@ -18,7 +18,7 @@ export default {
     },
 
     onLogin: function (loginFields) {
-        $.post("Login/Login", loginFields)
+        $.post("Account/Login", loginFields)
             .done(function (data) {
                 this.getViewData(data);
             }.bind(this));
@@ -33,9 +33,18 @@ export default {
     onSaveUserDetails: function (userDetails) {
         if (this.isUserLoggedIn()) {
             var currentUser = this.state.getCurrentUser();
-            Object.assign(currentUser, userDetails);
+            currentUser.Name = userDetails.name;
+            currentUser.Email = userDetails.email;
             this.triggerStore();
+            this.postUserDetails(currentUser);
         }
+    },
+
+    postUserDetails: function (userDetails) {
+        $.post("Account/UpdateUser", userDetails)
+            .done((data) => {
+                console.log(data);
+            });
     },
 
     onAddLinkToSelectedEmail: function (email) {

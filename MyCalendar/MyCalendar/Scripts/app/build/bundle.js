@@ -32288,14 +32288,14 @@
 	            Password: registerFields.password
 	        };
 	
-	        _jquery2.default.post("Login/Register", user).done(function (data) {
+	        _jquery2.default.post("Account/Register", user).done(function (data) {
 	            console.log(data);
 	            this.getViewData(data);
 	        }.bind(this));
 	    },
 	
 	    onLogin: function onLogin(loginFields) {
-	        _jquery2.default.post("Login/Login", loginFields).done(function (data) {
+	        _jquery2.default.post("Account/Login", loginFields).done(function (data) {
 	            this.getViewData(data);
 	        }.bind(this));
 	    },
@@ -32309,9 +32309,17 @@
 	    onSaveUserDetails: function onSaveUserDetails(userDetails) {
 	        if (this.isUserLoggedIn()) {
 	            var currentUser = this.state.getCurrentUser();
-	            Object.assign(currentUser, userDetails);
+	            currentUser.Name = userDetails.name;
+	            currentUser.Email = userDetails.email;
 	            this.triggerStore();
+	            this.postUserDetails(currentUser);
 	        }
+	    },
+	
+	    postUserDetails: function postUserDetails(userDetails) {
+	        _jquery2.default.post("Account/UpdateUser", userDetails).done(function (data) {
+	            console.log(data);
+	        });
 	    },
 	
 	    onAddLinkToSelectedEmail: function onAddLinkToSelectedEmail(email) {
@@ -33388,15 +33396,19 @@
 	        var currentUser = this.state.data.getCurrentUser();
 	        if (this.state.data.ui.mainPanel === 1) {
 	            if (currentUser) {
-	                panel = _react2.default.createElement(_EditUserPanel2.default, { currentUser: currentUser,
-	                    currentUserEvents: this.state.data.getEventsForCurrentUser() });
+	                panel = _react2.default.createElement(_EditUserPanel2.default, {
+	                    currentUser: currentUser,
+	                    currentUserEvents: this.state.data.getEventsForCurrentUser()
+	                });
 	            }
 	        } else if (this.state.data.ui.mainPanel === 2) {
 	            var selectedUser = this.state.data.getCurrentSelectedUser();
 	            if (selectedUser && currentUser) {
-	                panel = _react2.default.createElement(_PersonPanel2.default, { currentUserId: currentUser.userId,
+	                panel = _react2.default.createElement(_PersonPanel2.default, {
+	                    currentUserId: currentUser.userId,
 	                    selectedUser: selectedUser,
-	                    combinedEvents: this.state.data.getCombinedEventsWithSelectedUser() });
+	                    combinedEvents: this.state.data.getCombinedEventsWithSelectedUser()
+	                });
 	            }
 	        }
 	
@@ -33514,10 +33526,19 @@
 	        return _react2.default.createElement(
 	            "div",
 	            null,
-	            _react2.default.createElement(_TextBoxField2.default, { label: "Name", value: this.state.name, onChange: this.onNameChanged }),
-	            _react2.default.createElement(_TextBoxField2.default, { label: "Email", value: this.state.email, onChange: this.onEmailChanged }),
-	            _react2.default.createElement(_TextBoxField2.default, { label: "Password", value: this.state.password, onChange: this.onPasswordChanged }),
-	            _react2.default.createElement(_SaveButton2.default, { onClick: this.onSave })
+	            _react2.default.createElement(_TextBoxField2.default, {
+	                label: "Name",
+	                value: this.state.name,
+	                onChange: this.onNameChanged
+	            }),
+	            _react2.default.createElement(_TextBoxField2.default, {
+	                label: "Email",
+	                value: this.state.email,
+	                onChange: this.onEmailChanged
+	            }),
+	            _react2.default.createElement(_SaveButton2.default, {
+	                onClick: this.onSave
+	            })
 	        );
 	    },
 	
@@ -33533,17 +33554,10 @@
 	        });
 	    },
 	
-	    onPasswordChanged: function onPasswordChanged(password) {
-	        this.setState({
-	            password: password
-	        });
-	    },
-	
 	    onSave: function onSave() {
 	        _Actions2.default.saveUserDetails({
 	            name: this.state.name,
-	            email: this.state.email,
-	            password: this.state.password
+	            email: this.state.email
 	        });
 	    }
 	});
@@ -60421,10 +60435,14 @@
 	        return _react2.default.createElement(
 	            "div",
 	            null,
-	            _react2.default.createElement(_PersonForm2.default, { name: this.props.selectedUser.name,
-	                email: this.props.selectedUser.email }),
-	            _react2.default.createElement(_Calendar2.default, { currentUserId: this.props.currentUserId,
-	                events: this.props.combinedEvents })
+	            _react2.default.createElement(_PersonForm2.default, {
+	                name: this.props.selectedUser.Name,
+	                email: this.props.selectedUser.Email
+	            }),
+	            _react2.default.createElement(_Calendar2.default, {
+	                currentUserId: this.props.currentUserId,
+	                events: this.props.combinedEvents
+	            })
 	        );
 	    }
 	});

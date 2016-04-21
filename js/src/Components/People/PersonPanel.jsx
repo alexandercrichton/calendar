@@ -13,10 +13,14 @@ export default React.createClass({
     render: function () {
         return (
             <div>
-                <PersonForm name={this.props.selectedUser.name}
-                            email={this.props.selectedUser.email} />
-                <Calendar currentUserId={this.props.currentUserId}
-                          events={this.props.combinedEvents} />
+                <PersonForm 
+                    name={this.props.selectedUser.Name}
+                    email={this.props.selectedUser.Email}
+                />
+                <Calendar   
+                    currentUserId={this.props.currentUserId}
+                    events={this.props.combinedEvents} 
+                />
             </div>
         );
     }

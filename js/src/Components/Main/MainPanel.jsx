@@ -18,16 +18,23 @@ export default React.createClass({
         var currentUser = this.state.data.getCurrentUser();
         if (this.state.data.ui.mainPanel === 1) {
             if (currentUser) {
-                panel = (<EditUserPanel currentUser={currentUser}
-                                        currentUserEvents={this.state.data.getEventsForCurrentUser()}/>);
+                panel = (
+                    <EditUserPanel  
+                        currentUser={currentUser}
+                        currentUserEvents={this.state.data.getEventsForCurrentUser()}
+                    />
+                );
             }
         }
         else if (this.state.data.ui.mainPanel === 2) {
             var selectedUser = this.state.data.getCurrentSelectedUser();
             if (selectedUser && currentUser) {
-                panel = <PersonPanel currentUserId={currentUser.userId}
-                                     selectedUser={selectedUser } 
-                                     combinedEvents={this.state.data.getCombinedEventsWithSelectedUser()}/>;
+                panel = 
+                    <PersonPanel    
+                        currentUserId={currentUser.userId}
+                        selectedUser={selectedUser } 
+                        combinedEvents={this.state.data.getCombinedEventsWithSelectedUser()}
+                    />;
             }
         }
 

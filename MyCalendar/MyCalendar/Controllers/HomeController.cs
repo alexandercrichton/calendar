@@ -1,7 +1,7 @@
 ﻿using MyCalendar.Infrastructure;
 using MyCalendar.Models;
 using MyCalendar.Models.Home;
-using MyCalendar.Models.User;
+using MyCalendar.Models.Account;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;

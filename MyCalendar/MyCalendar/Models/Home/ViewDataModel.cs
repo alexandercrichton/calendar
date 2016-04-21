@@ -1,4 +1,4 @@
-﻿using MyCalendar.Models.User;
+﻿using MyCalendar.Models.Account;
 using System.Collections.Generic;
 
 namespace MyCalendar.Models.Home

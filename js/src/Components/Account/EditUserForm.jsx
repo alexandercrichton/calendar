@@ -24,10 +24,19 @@ export default React.createClass({
     render: function () {
         return (
             <div>
-                <TextBoxField label='Name' value={this.state.name} onChange={this.onNameChanged } />
-                <TextBoxField label='Email' value={this.state.email} onChange={this.onEmailChanged} />
-                <TextBoxField label='Password' value={this.state.password} onChange={this.onPasswordChanged} />
-                <SaveButton onClick={this.onSave} />
+                <TextBoxField 
+                    label='Name' 
+                    value={this.state.name} 
+                    onChange={this.onNameChanged} 
+                />
+                <TextBoxField 
+                    label='Email' 
+                    value={this.state.email} 
+                    onChange={this.onEmailChanged} 
+                />
+                <SaveButton 
+                    onClick={this.onSave} 
+                />
             </div>
         );
     },
@@ -44,17 +53,10 @@ export default React.createClass({
         });
     },
 
-    onPasswordChanged: function (password) {
-        this.setState({
-            password: password
-        });
-    },
-
     onSave: function () {
         Actions.saveUserDetails({
             name: this.state.name,
-            email: this.state.email,
-            password: this.state.password
+            email: this.state.email
         });
     }
 });
