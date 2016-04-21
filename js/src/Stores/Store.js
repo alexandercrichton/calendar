@@ -5,15 +5,14 @@ import Actions from "../Actions/Actions";
 import * as Constants from "../Constants";
 
 import StoreViewExtensions from "./StoreViewExtensions";
-import StoreDataExtensions from "./StoreDataExtensions";
-
-
-
+import StoreAccountExtensions from "./StoreAccountExtensions";
+import StoreEventExtensions from "./StoreEventExtensions";
 
 let Store = $.extend(
     {}, 
     StoreViewExtensions, 
-    StoreDataExtensions,
+    StoreAccountExtensions,
+    StoreEventExtensions,
     {
         listenables: [Actions],
 
@@ -38,6 +37,8 @@ let Store = $.extend(
                     return this.getUserById(this.state.currentSelectedUserId);
                 }.bind(this),
 
+                getOtherUsers: this.getOtherUsers,
+
                 groups: [],
 
                 events: [],
@@ -61,10 +62,6 @@ let Store = $.extend(
             return this.state;
         },
 
-        isUserLoggedIn: function () {
-            return this.state.currentUserId > 0;
-        },
-
         getViewData: function (userId) {
             if (userId) {
                 const done = this.applyViewData.bind(this);
@@ -81,44 +78,10 @@ let Store = $.extend(
             this.triggerStore();
         },
 
-        updateUsersForCurrentUser: function () {
-            this.state.users = [];
-            let links = userLinks[this.state.currentUserId];
-            if (links) {
-                for (let i = 0; i < links.length; i++) {
-                    this.state.users.push(this.getUserById(links[i]));
-                }
-            }
-        },
-
-        getUserById: function (userId) {
-            for (let i = 0; i < this.state.users.length; i++) {
-                let user = this.state.users[i];
-                if (user.UserId === userId) {
-                    return user;
-                }
-            }
-
-            return null;
-        },
-
-        getUserByEmail: function (email) {
-            for (let i = 0; i < this.state.users.length; i++) {
-                let user = this.state.users[i];
-                if (user.Email === email) {
-                    return user;
-                }
-            }
-
-            return null;
-        },
-
         triggerStore: function () {
             this.trigger(this.state);
         }
     }
 );
-
-Store = $.extend(Store, StoreViewExtensions, StoreDataExtensions);
 
 export default Reflux.createStore(Store);

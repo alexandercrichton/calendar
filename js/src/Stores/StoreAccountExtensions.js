@@ -3,6 +3,11 @@
 import * as Constants from "../Constants";
 
 export default {
+
+    isUserLoggedIn: function () {
+        return this.state.currentUserId > 0;
+    },
+
     onRegister: function (registerFields) {
         var user = {
             Name: registerFields.name,
@@ -12,7 +17,6 @@ export default {
 
         $.post("Account/Register", user)
             .done(function (data) {
-                console.log(data);
                 this.getViewData(data);
             }.bind(this))
     },
@@ -42,22 +46,24 @@ export default {
 
     postUserDetails: function (userDetails) {
         $.post("Account/UpdateUser", userDetails)
-            .done((data) => {
-                console.log(data);
+            .fail((data) => {
+                console.log("postUserDetails fail", data);
             });
     },
 
-    onAddLinkToSelectedEmail: function (email) {
-        var user = this.getUserByEmail(email);
-        if (user) {
-            if (userLinks[this.state.currentUserId] === undefined) {
-                userLinks[this.state.currentUserId] = [];
-            }
+    onLinkCurrentUserToUserByEmail: function (email) {
+        const postData = {
+            fromUserId: this.state.currentUserId,
+            toEmail: email
+        };
 
-            userLinks[this.state.currentUserId].push(user.UserId)
-            this.updateUsersForCurrentUser();
-            this.triggerStore();
-        }
+        $.post("Account/LinkUserToUserByEmail", postData)
+            .done((linkedUser) => {
+                if (linkedUser) {
+                    this.state.users.push(linkedUser);
+                    this.triggerStore();
+                }
+            });
     },
 
     onRemoveLinkForPerson: function (userId) {
@@ -69,21 +75,31 @@ export default {
         this.triggerStore();
     },
 
-    onAddEventForCurrentUser: function (event) {
-        event.id = this.getNextEventId();
-        event.UserId = this.state.currentUserId;
-        this.state.events.push(event);
-        this.triggerStore();
+    getUserById: function (userId) {
+        for (let i = 0; i < this.state.users.length; i++) {
+            let user = this.state.users[i];
+            if (user.UserId === userId) {
+                return user;
+            }
+        }
+
+        return null;
     },
 
-    getNextEventId: function () {
-        return highestEventId++;
+    getUserByEmail: function (email) {
+        for (let i = 0; i < this.state.users.length; i++) {
+            let user = this.state.users[i];
+            if (user.Email === email) {
+                return user;
+            }
+        }
+
+        return null;
     },
 
-    onRemoveEventForCurrentUser: function (eventId) {
-        this.state.events = this.state.events.filter(function (event) {
-            return event.id !== eventId;
-        });
-        this.triggerStore();
+    getOtherUsers: function () {
+        return this.state.users.filter((user) => {
+            return (user.UserId !== this.state.currentUserId);
+        }, this);
     }
 };

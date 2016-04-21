@@ -51,7 +51,7 @@ export default React.createClass({
 
     onAddPerson: function () {
         this.setState({ selectedEmail: "" });
-        Actions.addLinkToSelectedEmail(this.state.selectedEmail);
+        Actions.linkCurrentUserToUserByEmail(this.state.selectedEmail);
     },
 
     renderPeople: function () {

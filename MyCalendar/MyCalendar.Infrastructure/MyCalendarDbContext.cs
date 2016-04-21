@@ -10,5 +10,6 @@ namespace MyCalendar.Infrastructure
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserLink> UserLinks { get; set; }
     }
 }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\User.cs" />
+    <Compile Include="Model\UserLink.cs" />
     <Compile Include="MyCalendarDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -14,7 +14,7 @@ export default Reflux.createActions([
 
     "viewPerson",
     "saveUserDetails",
-    "addLinkToSelectedEmail",
+    "linkCurrentUserToUserByEmail",
     "removeLinkForPerson",
 
     "addEventForCurrentUser",

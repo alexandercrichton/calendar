@@ -16,24 +16,29 @@ export default React.createClass({
 
     render: function () {
         return (
-            <div>
-                {this.renderCurrentPanel()}
-            </div>
+            this.renderCurrentPanel()
         );
     },
 
     renderCurrentPanel: function () {
         if (this.state.data.ui.menuPanel === Constants.Panel.Menu.ACCOUNT) {
             return (
-                <MenuAccountPanel currentUser={this.state.data.getCurrentUser()} />
+                <MenuAccountPanel 
+                    currentUser={this.state.data.getCurrentUser()} 
+                />
             );
         } else if (this.state.data.ui.menuPanel === Constants.Panel.Menu.PEOPLE) {
             return (
-                <MenuPeoplePanel users={this.state.data.users} selectedUserId={this.state.data.currentSelectedUserId} />
+                <MenuPeoplePanel 
+                    users={this.state.data.getOtherUsers()} 
+                    selectedUserId={this.state.data.currentSelectedUserId} 
+                />
             );
         } else {
             return (
-                <MenuGroupsPanel groups={this.state.data.groups} />
+                <MenuGroupsPanel 
+                    groups={this.state.data.groups} 
+                />
             );
         }
     }

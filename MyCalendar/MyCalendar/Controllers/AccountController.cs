@@ -51,5 +51,31 @@ namespace MyCalendar.Controllers
                 return StrongJsonResult.From(user?.UserId);
             }
         }
+
+        public StrongJsonResult<UserViewModel> LinkUserToUserByEmail(int? fromUserId, string toEmail)
+        {
+            using (var db = new MyCalendarDbContext())
+            {
+                var fromUser = db.Users.FirstOrDefault(u => u.UserId == fromUserId);
+                if (fromUserId != null)
+                {
+                    var toUser = db.Users.FirstOrDefault(u => u.Email == toEmail && u.UserId != fromUser.UserId);
+                    if (toUser != null)
+                    {
+                        var link = db.UserLinks.FirstOrDefault(l => l.FromUserId == fromUserId
+                            && l.ToUserId == toUser.UserId);
+                        if (link == null)
+                        {
+                            link = new UserLink(fromUserId, toUser.UserId);
+                            db.UserLinks.Add(link);
+                            db.SaveChanges();
+                            return StrongJsonResult.From(new UserViewModel(toUser));
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 import Reflux from "reflux";
 
 import Store from "../../Stores/Store";
+import * as Constants from "../../Constants";
 
 import EditUserPanel from "../Account/EditUserPanel.jsx";
 import PersonPanel from "../People/PersonPanel.jsx";
@@ -16,7 +17,7 @@ export default React.createClass({
 
         var panel;
         var currentUser = this.state.data.getCurrentUser();
-        if (this.state.data.ui.mainPanel === 1) {
+        if (this.state.data.ui.mainPanel === Constants.Panel.Main.USER_DETAILS) {
             if (currentUser) {
                 panel = (
                     <EditUserPanel  
@@ -26,13 +27,13 @@ export default React.createClass({
                 );
             }
         }
-        else if (this.state.data.ui.mainPanel === 2) {
+        else if (this.state.data.ui.mainPanel === Constants.Panel.Main.PERSON) {
             var selectedUser = this.state.data.getCurrentSelectedUser();
             if (selectedUser && currentUser) {
                 panel = 
                     <PersonPanel    
-                        currentUserId={currentUser.userId}
-                        selectedUser={selectedUser } 
+                        currentUserId={currentUser.UserId}
+                        selectedUser={selectedUser} 
                         combinedEvents={this.state.data.getCombinedEventsWithSelectedUser()}
                     />;
             }

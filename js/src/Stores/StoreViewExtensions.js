@@ -45,7 +45,7 @@ export default {
         if (this.isUserLoggedIn()) {
             var user = this.getUserById(userId);
             if (user) {
-                this.state.currentSelectedUserId = user.userId;
+                this.state.currentSelectedUserId = user.UserId;
                 this.onShowMainPersonPanel();
                 this.triggerStore();
             }

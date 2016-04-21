@@ -11,8 +11,8 @@ export default React.createClass({
     render: function () {
         return (
             <div>
-                <Label label="Name" value={this.props.name} />
-                <Label label="Email" value={this.props.email} />
+                <LabelField label="Name" value={this.props.name} />
+                <LabelField label="Email" value={this.props.email} />
             </div>
         );
     }

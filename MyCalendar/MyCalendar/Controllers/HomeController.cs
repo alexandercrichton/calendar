@@ -1,8 +1,7 @@
 ﻿using MyCalendar.Infrastructure;
 using MyCalendar.Models;
-using MyCalendar.Models.Home;
 using MyCalendar.Models.Account;
-using System.Collections.Generic;
+using MyCalendar.Models.Home;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -20,9 +19,14 @@ namespace MyCalendar.Controllers
             using (var db = new MyCalendarDbContext())
             {
                 var currentUser = db.Users.FirstOrDefault(u => u.UserId == userId);
+                var users = db.Users
+                    .Where(u => u.UserId == currentUser.UserId
+                        || db.UserLinks
+                            .Any(l => l.FromUserId == currentUser.UserId && l.ToUserId == u.UserId))
+                    .ToList();
                 var model = new ViewDataModel
                 {
-                    Users = new List<UserViewModel> { new UserViewModel(currentUser) },
+                    Users = users.Select(u => new UserViewModel(u)).ToList(),
                     CurrentUserId = currentUser.UserId
                 };
                 return StrongJsonResult.From(model);

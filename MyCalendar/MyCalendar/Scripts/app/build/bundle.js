@@ -22179,7 +22179,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = _reflux2.default.createActions(['register', 'login', 'logout', "setMenuPanel", "showMenuAccountPanel", "showMenuPeoplePanel", "showMenuGroupsPanel", "setMainPanel", "viewPerson", "saveUserDetails", "addLinkToSelectedEmail", "removeLinkForPerson", "addEventForCurrentUser", "removeEventForCurrentUser"]);
+	exports.default = _reflux2.default.createActions(['register', 'login', 'logout', "setMenuPanel", "showMenuAccountPanel", "showMenuPeoplePanel", "showMenuGroupsPanel", "setMainPanel", "viewPerson", "saveUserDetails", "linkCurrentUserToUserByEmail", "removeLinkForPerson", "addEventForCurrentUser", "removeEventForCurrentUser"]);
 
 /***/ },
 /* 190 */
@@ -22214,15 +22214,19 @@
 	
 	var _StoreViewExtensions2 = _interopRequireDefault(_StoreViewExtensions);
 	
-	var _StoreDataExtensions = __webpack_require__(/*! ./StoreDataExtensions */ 193);
+	var _StoreAccountExtensions = __webpack_require__(/*! ./StoreAccountExtensions */ 327);
 	
-	var _StoreDataExtensions2 = _interopRequireDefault(_StoreDataExtensions);
+	var _StoreAccountExtensions2 = _interopRequireDefault(_StoreAccountExtensions);
+	
+	var _StoreEventExtensions = __webpack_require__(/*! ./StoreEventExtensions */ 328);
+	
+	var _StoreEventExtensions2 = _interopRequireDefault(_StoreEventExtensions);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var Store = _jquery2.default.extend({}, _StoreViewExtensions2.default, _StoreDataExtensions2.default, {
+	var Store = _jquery2.default.extend({}, _StoreViewExtensions2.default, _StoreAccountExtensions2.default, _StoreEventExtensions2.default, {
 	    listenables: [_Actions2.default],
 	
 	    init: function init() {
@@ -22246,6 +22250,8 @@
 	                return this.getUserById(this.state.currentSelectedUserId);
 	            }.bind(this),
 	
+	            getOtherUsers: this.getOtherUsers,
+	
 	            groups: [],
 	
 	            events: [],
@@ -22268,10 +22274,6 @@
 	        return this.state;
 	    },
 	
-	    isUserLoggedIn: function isUserLoggedIn() {
-	        return this.state.currentUserId > 0;
-	    },
-	
 	    getViewData: function getViewData(userId) {
 	        if (userId) {
 	            var done = this.applyViewData.bind(this);
@@ -22287,44 +22289,10 @@
 	        this.triggerStore();
 	    },
 	
-	    updateUsersForCurrentUser: function updateUsersForCurrentUser() {
-	        this.state.users = [];
-	        var links = userLinks[this.state.currentUserId];
-	        if (links) {
-	            for (var i = 0; i < links.length; i++) {
-	                this.state.users.push(this.getUserById(links[i]));
-	            }
-	        }
-	    },
-	
-	    getUserById: function getUserById(userId) {
-	        for (var i = 0; i < this.state.users.length; i++) {
-	            var user = this.state.users[i];
-	            if (user.UserId === userId) {
-	                return user;
-	            }
-	        }
-	
-	        return null;
-	    },
-	
-	    getUserByEmail: function getUserByEmail(email) {
-	        for (var i = 0; i < this.state.users.length; i++) {
-	            var user = this.state.users[i];
-	            if (user.Email === email) {
-	                return user;
-	            }
-	        }
-	
-	        return null;
-	    },
-	
 	    triggerStore: function triggerStore() {
 	        this.trigger(this.state);
 	    }
 	});
-	
-	Store = _jquery2.default.extend(Store, _StoreViewExtensions2.default, _StoreDataExtensions2.default);
 	
 	exports.default = _reflux2.default.createStore(Store);
 
@@ -32247,7 +32215,7 @@
 	        if (this.isUserLoggedIn()) {
 	            var user = this.getUserById(userId);
 	            if (user) {
-	                this.state.currentSelectedUserId = user.userId;
+	                this.state.currentSelectedUserId = user.UserId;
 	                this.onShowMainPersonPanel();
 	                this.triggerStore();
 	            }
@@ -32256,114 +32224,7 @@
 	};
 
 /***/ },
-/* 193 */
-/*!*******************************************!*\
-  !*** ./src/Stores/StoreDataExtensions.js ***!
-  \*******************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _jquery = __webpack_require__(/*! jquery */ 191);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	var _Constants = __webpack_require__(/*! ../Constants */ 326);
-	
-	var Constants = _interopRequireWildcard(_Constants);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.default = {
-	    onRegister: function onRegister(registerFields) {
-	        var user = {
-	            Name: registerFields.name,
-	            Email: registerFields.email,
-	            Password: registerFields.password
-	        };
-	
-	        _jquery2.default.post("Account/Register", user).done(function (data) {
-	            console.log(data);
-	            this.getViewData(data);
-	        }.bind(this));
-	    },
-	
-	    onLogin: function onLogin(loginFields) {
-	        _jquery2.default.post("Account/Login", loginFields).done(function (data) {
-	            this.getViewData(data);
-	        }.bind(this));
-	    },
-	
-	    onLogout: function onLogout() {
-	        this.state.currentUserId = 0;
-	        this.onSetMainPanel(Constants.Panel.Main.NONE);
-	        this.triggerStore();
-	    },
-	
-	    onSaveUserDetails: function onSaveUserDetails(userDetails) {
-	        if (this.isUserLoggedIn()) {
-	            var currentUser = this.state.getCurrentUser();
-	            currentUser.Name = userDetails.name;
-	            currentUser.Email = userDetails.email;
-	            this.triggerStore();
-	            this.postUserDetails(currentUser);
-	        }
-	    },
-	
-	    postUserDetails: function postUserDetails(userDetails) {
-	        _jquery2.default.post("Account/UpdateUser", userDetails).done(function (data) {
-	            console.log(data);
-	        });
-	    },
-	
-	    onAddLinkToSelectedEmail: function onAddLinkToSelectedEmail(email) {
-	        var user = this.getUserByEmail(email);
-	        if (user) {
-	            if (userLinks[this.state.currentUserId] === undefined) {
-	                userLinks[this.state.currentUserId] = [];
-	            }
-	
-	            userLinks[this.state.currentUserId].push(user.UserId);
-	            this.updateUsersForCurrentUser();
-	            this.triggerStore();
-	        }
-	    },
-	
-	    onRemoveLinkForPerson: function onRemoveLinkForPerson(userId) {
-	        var links = userLinks[this.state.currentUserId];
-	        userLinks[this.state.currentUserId] = links.filter(function (link) {
-	            return link !== userId;
-	        });
-	        this.updateUsersForCurrentUser();
-	        this.triggerStore();
-	    },
-	
-	    onAddEventForCurrentUser: function onAddEventForCurrentUser(event) {
-	        event.id = this.getNextEventId();
-	        event.UserId = this.state.currentUserId;
-	        this.state.events.push(event);
-	        this.triggerStore();
-	    },
-	
-	    getNextEventId: function getNextEventId() {
-	        return highestEventId++;
-	    },
-	
-	    onRemoveEventForCurrentUser: function onRemoveEventForCurrentUser(eventId) {
-	        this.state.events = this.state.events.filter(function (event) {
-	            return event.id !== eventId;
-	        });
-	        this.triggerStore();
-	    }
-	};
-
-/***/ },
+/* 193 */,
 /* 194 */
 /*!************************************************!*\
   !*** ./src/Components/Menu/MenuHeaderLink.jsx ***!
@@ -32469,20 +32330,23 @@
 	    mixins: [_reflux2.default.connect(_Store2.default, "data")],
 	
 	    render: function render() {
-	        return _react2.default.createElement(
-	            "div",
-	            null,
-	            this.renderCurrentPanel()
-	        );
+	        return this.renderCurrentPanel();
 	    },
 	
 	    renderCurrentPanel: function renderCurrentPanel() {
 	        if (this.state.data.ui.menuPanel === Constants.Panel.Menu.ACCOUNT) {
-	            return _react2.default.createElement(_MenuAccountPanel2.default, { currentUser: this.state.data.getCurrentUser() });
+	            return _react2.default.createElement(_MenuAccountPanel2.default, {
+	                currentUser: this.state.data.getCurrentUser()
+	            });
 	        } else if (this.state.data.ui.menuPanel === Constants.Panel.Menu.PEOPLE) {
-	            return _react2.default.createElement(_MenuPeoplePanel2.default, { users: this.state.data.users, selectedUserId: this.state.data.currentSelectedUserId });
+	            return _react2.default.createElement(_MenuPeoplePanel2.default, {
+	                users: this.state.data.getOtherUsers(),
+	                selectedUserId: this.state.data.currentSelectedUserId
+	            });
 	        } else {
-	            return _react2.default.createElement(_MenuGroupsPanel2.default, { groups: this.state.data.groups });
+	            return _react2.default.createElement(_MenuGroupsPanel2.default, {
+	                groups: this.state.data.groups
+	            });
 	        }
 	    }
 	});
@@ -33112,7 +32976,7 @@
 	
 	    onAddPerson: function onAddPerson() {
 	        this.setState({ selectedEmail: "" });
-	        _Actions2.default.addLinkToSelectedEmail(this.state.selectedEmail);
+	        _Actions2.default.linkCurrentUserToUserByEmail(this.state.selectedEmail);
 	    },
 	
 	    renderPeople: function renderPeople() {
@@ -33372,6 +33236,10 @@
 	
 	var _Store2 = _interopRequireDefault(_Store);
 	
+	var _Constants = __webpack_require__(/*! ../../Constants */ 326);
+	
+	var Constants = _interopRequireWildcard(_Constants);
+	
 	var _EditUserPanel = __webpack_require__(/*! ../Account/EditUserPanel.jsx */ 214);
 	
 	var _EditUserPanel2 = _interopRequireDefault(_EditUserPanel);
@@ -33379,6 +33247,8 @@
 	var _PersonPanel = __webpack_require__(/*! ../People/PersonPanel.jsx */ 322);
 	
 	var _PersonPanel2 = _interopRequireDefault(_PersonPanel);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -33394,18 +33264,18 @@
 	
 	        var panel;
 	        var currentUser = this.state.data.getCurrentUser();
-	        if (this.state.data.ui.mainPanel === 1) {
+	        if (this.state.data.ui.mainPanel === Constants.Panel.Main.USER_DETAILS) {
 	            if (currentUser) {
 	                panel = _react2.default.createElement(_EditUserPanel2.default, {
 	                    currentUser: currentUser,
 	                    currentUserEvents: this.state.data.getEventsForCurrentUser()
 	                });
 	            }
-	        } else if (this.state.data.ui.mainPanel === 2) {
+	        } else if (this.state.data.ui.mainPanel === Constants.Panel.Main.PERSON) {
 	            var selectedUser = this.state.data.getCurrentSelectedUser();
 	            if (selectedUser && currentUser) {
 	                panel = _react2.default.createElement(_PersonPanel2.default, {
-	                    currentUserId: currentUser.userId,
+	                    currentUserId: currentUser.UserId,
 	                    selectedUser: selectedUser,
 	                    combinedEvents: this.state.data.getCombinedEventsWithSelectedUser()
 	                });
@@ -60483,8 +60353,8 @@
 	        return _react2.default.createElement(
 	            "div",
 	            null,
-	            _react2.default.createElement(Label, { label: "Name", value: this.props.name }),
-	            _react2.default.createElement(Label, { label: "Email", value: this.props.email })
+	            _react2.default.createElement(_LabelField2.default, { label: "Name", value: this.props.name }),
+	            _react2.default.createElement(_LabelField2.default, { label: "Email", value: this.props.email })
 	        );
 	    }
 	});
@@ -60599,6 +60469,178 @@
 			PEOPLE: 2,
 			GROUPS: 3
 		}
+	};
+
+/***/ },
+/* 327 */
+/*!**********************************************!*\
+  !*** ./src/Stores/StoreAccountExtensions.js ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _jquery = __webpack_require__(/*! jquery */ 191);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _Constants = __webpack_require__(/*! ../Constants */ 326);
+	
+	var Constants = _interopRequireWildcard(_Constants);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	
+	    isUserLoggedIn: function isUserLoggedIn() {
+	        return this.state.currentUserId > 0;
+	    },
+	
+	    onRegister: function onRegister(registerFields) {
+	        var user = {
+	            Name: registerFields.name,
+	            Email: registerFields.email,
+	            Password: registerFields.password
+	        };
+	
+	        _jquery2.default.post("Account/Register", user).done(function (data) {
+	            this.getViewData(data);
+	        }.bind(this));
+	    },
+	
+	    onLogin: function onLogin(loginFields) {
+	        _jquery2.default.post("Account/Login", loginFields).done(function (data) {
+	            this.getViewData(data);
+	        }.bind(this));
+	    },
+	
+	    onLogout: function onLogout() {
+	        this.state.currentUserId = 0;
+	        this.onSetMainPanel(Constants.Panel.Main.NONE);
+	        this.triggerStore();
+	    },
+	
+	    onSaveUserDetails: function onSaveUserDetails(userDetails) {
+	        if (this.isUserLoggedIn()) {
+	            var currentUser = this.state.getCurrentUser();
+	            currentUser.Name = userDetails.name;
+	            currentUser.Email = userDetails.email;
+	            this.triggerStore();
+	            this.postUserDetails(currentUser);
+	        }
+	    },
+	
+	    postUserDetails: function postUserDetails(userDetails) {
+	        _jquery2.default.post("Account/UpdateUser", userDetails).fail(function (data) {
+	            console.log("postUserDetails fail", data);
+	        });
+	    },
+	
+	    onLinkCurrentUserToUserByEmail: function onLinkCurrentUserToUserByEmail(email) {
+	        var _this = this;
+	
+	        var postData = {
+	            fromUserId: this.state.currentUserId,
+	            toEmail: email
+	        };
+	
+	        _jquery2.default.post("Account/LinkUserToUserByEmail", postData).done(function (linkedUser) {
+	            if (linkedUser) {
+	                _this.state.users.push(linkedUser);
+	                _this.triggerStore();
+	            }
+	        });
+	    },
+	
+	    onRemoveLinkForPerson: function onRemoveLinkForPerson(userId) {
+	        var links = userLinks[this.state.currentUserId];
+	        userLinks[this.state.currentUserId] = links.filter(function (link) {
+	            return link !== userId;
+	        });
+	        this.updateUsersForCurrentUser();
+	        this.triggerStore();
+	    },
+	
+	    getUserById: function getUserById(userId) {
+	        for (var i = 0; i < this.state.users.length; i++) {
+	            var user = this.state.users[i];
+	            if (user.UserId === userId) {
+	                return user;
+	            }
+	        }
+	
+	        return null;
+	    },
+	
+	    getUserByEmail: function getUserByEmail(email) {
+	        for (var i = 0; i < this.state.users.length; i++) {
+	            var user = this.state.users[i];
+	            if (user.Email === email) {
+	                return user;
+	            }
+	        }
+	
+	        return null;
+	    },
+	
+	    getOtherUsers: function getOtherUsers() {
+	        var _this2 = this;
+	
+	        return this.state.users.filter(function (user) {
+	            return user.UserId !== _this2.state.currentUserId;
+	        }, this);
+	    }
+	};
+
+/***/ },
+/* 328 */
+/*!********************************************!*\
+  !*** ./src/Stores/StoreEventExtensions.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _jquery = __webpack_require__(/*! jquery */ 191);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _Constants = __webpack_require__(/*! ../Constants */ 326);
+	
+	var Constants = _interopRequireWildcard(_Constants);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	    onAddEventForCurrentUser: function onAddEventForCurrentUser(event) {
+	        event.id = this.getNextEventId();
+	        event.UserId = this.state.currentUserId;
+	        this.state.events.push(event);
+	        this.triggerStore();
+	    },
+	
+	    getNextEventId: function getNextEventId() {
+	        return highestEventId++;
+	    },
+	
+	    onRemoveEventForCurrentUser: function onRemoveEventForCurrentUser(eventId) {
+	        this.state.events = this.state.events.filter(function (event) {
+	            return event.id !== eventId;
+	        });
+	        this.triggerStore();
+	    }
 	};
 
 /***/ }
