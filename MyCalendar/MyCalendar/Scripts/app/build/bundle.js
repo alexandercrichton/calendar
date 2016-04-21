@@ -32428,14 +32428,18 @@
 	
 	exports.default = {
 	    onAddEventForCurrentUser: function onAddEventForCurrentUser(event) {
-	        event.id = this.getNextEventId();
-	        event.UserId = this.state.currentUserId;
-	        this.state.events.push(event);
-	        this.triggerStore();
-	    },
+	        var postData = {
+	            UserId: this.state.currentUserId,
+	            Title: event.title,
+	            StartTime: event.start,
+	            EndTime: event.EndTime
+	        };
 	
-	    getNextEventId: function getNextEventId() {
-	        return highestEventId++;
+	        _jquery2.default.post("Event/AddEvent", postData).done(function (addedEvent) {
+	            this.state.events.push(addedEvent);
+	            console.log(addedEvent);
+	            this.triggerStore();
+	        });
 	    },
 	
 	    onRemoveEventForCurrentUser: function onRemoveEventForCurrentUser(eventId) {
@@ -33767,8 +33771,8 @@
 	    addEvent: function addEvent(start, end) {
 	        var event = {
 	            title: '',
-	            start: start,
-	            end: end
+	            start: start.toISOString(),
+	            end: end.toISOString()
 	        };
 	        _Actions2.default.addEventForCurrentUser(event);
 	    },

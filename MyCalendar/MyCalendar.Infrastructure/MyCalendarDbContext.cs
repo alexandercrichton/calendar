@@ -9,6 +9,7 @@ namespace MyCalendar.Infrastructure
         {
         }
 
+        public DbSet<Event> Events { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserLink> UserLinks { get; set; }
     }

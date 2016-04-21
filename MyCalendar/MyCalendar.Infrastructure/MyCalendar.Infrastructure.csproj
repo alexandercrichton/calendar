@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Event.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserLink.cs" />
     <Compile Include="MyCalendarDbContext.cs" />

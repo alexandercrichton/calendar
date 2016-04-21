@@ -47,8 +47,8 @@ export default React.createClass({
     addEvent: function (start, end) {
         var event = {
             title: '',
-            start: start,
-            end: end
+            start: start.toISOString(),
+            end: end.toISOString()
         };
         Actions.addEventForCurrentUser(event);
     },

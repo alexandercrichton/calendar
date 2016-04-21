@@ -4,14 +4,19 @@ import * as Constants from "../Constants";
 
 export default {
     onAddEventForCurrentUser: function (event) {
-        event.id = this.getNextEventId();
-        event.UserId = this.state.currentUserId;
-        this.state.events.push(event);
-        this.triggerStore();
-    },
+        const postData = {
+            UserId: this.state.currentUserId,
+            Title: event.title,
+            StartTime: event.start,
+            EndTime: event.EndTime
+        };
 
-    getNextEventId: function () {
-        return highestEventId++;
+        $.post("Event/AddEvent", postData)
+            .done(function (addedEvent) {
+                this.state.events.push(addedEvent);
+                console.log(addedEvent);
+                this.triggerStore();
+            });
     },
 
     onRemoveEventForCurrentUser: function (eventId) {
