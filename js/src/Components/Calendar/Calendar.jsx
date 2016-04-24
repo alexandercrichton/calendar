@@ -96,22 +96,27 @@ export default React.createClass({
     },
 
     renderNewEvents: function () {
-        var renderedEvents = $(this.node).fullCalendar("clientEvents");
+        const renderedEvents = this.getRenderedEvents();
+        const unRenderedEvents = this.filterMatchingEvents(this.fcEvents, renderedEvents);
+        this.renderEvents(unRenderedEvents);
+    },
 
-        for (var i = 0; i < this.fcEvents.length; i++) {
-            var isRendered = false;
+    getRenderedEvents: function () {
+        return $(this.node).fullCalendar("clientEvents");
+    },
 
-            for (var j = 0; j < renderedEvents.length; j++) {
+    filterMatchingEvents: function (sourceFcEvents, comparisonFcEvents) {
+        return sourceFcEvents.filter((sourceEvent) => {
+            const matches = comparisonFcEvents.filter((comparisonEvent) => {
+                return sourceEvent.id === comparisonEvent.id;
+            });
+            return matches.length === 0;
+        })
+    },
 
-                if (this.fcEvents[i].id === renderedEvents[j].id) {
-                    isRendered = true;
-                    break;
-                }
-            }
-
-            if (!isRendered) {
-                $(this.node).fullCalendar("renderEvent", this.fcEvents[i], true);
-            }
+    renderEvents: function (fcEvents) {
+        for (let i = 0; i < fcEvents.length; i++) {
+            $(this.node).fullCalendar("renderEvent", fcEvents[i], true);
         }
     },
 

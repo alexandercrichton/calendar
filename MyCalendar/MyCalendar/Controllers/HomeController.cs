@@ -1,7 +1,6 @@
 ﻿using MyCalendar.Infrastructure;
 using MyCalendar.Models;
 using MyCalendar.Models.Account;
-using MyCalendar.Models.Events;
 using MyCalendar.Models.Home;
 using System.Linq;
 using System.Web.Mvc;
@@ -19,20 +18,24 @@ namespace MyCalendar.Controllers
         {
             using (var db = new MyCalendarDbContext())
             {
-                var currentUser = db.Users.FirstOrDefault(u => u.UserId == userId);
-                var users = db.Users
-                    .Where(u => u.UserId == currentUser.UserId
-                        || db.UserLinks
-                            .Any(l => l.FromUserId == currentUser.UserId && l.ToUserId == u.UserId))
+                var data = db.Users
+                    .Where(u => u.UserId == userId
+                        || u.UserLinks
+                            .Any(l => l.FromUserId == userId && l.ToUserId == u.UserId))
+                    .Select(u => new
+                    {
+                        User = u,
+                        Events = u.Events
+                    });
+
+                var viewModels = data
+                    .Select(d => new UserViewModel(d.User, d.Events))
                     .ToList();
-                var events = db.Events
-                    .Where(e => e.UserId == currentUser.UserId)
-                    .ToList();
+
                 var model = new ViewDataModel
                 {
-                    Users = users.Select(u => new UserViewModel(u)).ToList(),
-                    CurrentUserId = currentUser.UserId,
-                    Events = events.Select(e => new EventViewModel(e)).ToList()
+                    Users = viewModels,
+                    CurrentUserId = userId
                 };
                 return StrongJsonResult.From(model);
             }

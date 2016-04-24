@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyCalendar.Infrastructure.Model
 {
@@ -9,5 +10,8 @@ namespace MyCalendar.Infrastructure.Model
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+
+        public virtual ICollection<UserLink> UserLinks { get; set; }
+        public virtual ICollection<Event> Events { get; set; }
     }
 }

@@ -12,9 +12,15 @@ export default {
     },
 
     onRemoveEventForCurrentUser: function (eventId) {
-        this.state.events = this.state.events.filter(function (event) {
+        const postData = {
+            eventId: eventId
+        };
+
+        $.post("Event/RemoveEvent", postData);
+
+        this.state.events = this.state.events.filter((event) => {
             return event.EventId !== eventId;
         });
-        this.triggerStore();
+        this.triggerStore();  
     }
 };

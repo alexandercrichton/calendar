@@ -2,6 +2,7 @@
 using MyCalendar.Infrastructure.Model;
 using MyCalendar.Models;
 using MyCalendar.Models.Events;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace MyCalendar.Controllers
@@ -17,6 +18,17 @@ namespace MyCalendar.Controllers
                 db.Events.Add(evnt);
                 db.SaveChanges();
                 return StrongJsonResult.From(new EventViewModel(evnt));
+            }
+        }
+
+        public StrongJsonResult<int?> RemoveEvent(int? eventId)
+        {
+            using (var db = new MyCalendarDbContext())
+            {
+                var evnt = db.Events.FirstOrDefault(e => e.EventId == eventId);
+                db.Events.Remove(evnt);
+                db.SaveChanges();
+                return StrongJsonResult.From(eventId);
             }
         }
     }

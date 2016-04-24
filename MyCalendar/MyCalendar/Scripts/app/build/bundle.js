@@ -32436,6 +32436,12 @@
 	    },
 	
 	    onRemoveEventForCurrentUser: function onRemoveEventForCurrentUser(eventId) {
+	        var postData = {
+	            eventId: eventId
+	        };
+	
+	        _jquery2.default.post("Event/RemoveEvent", postData);
+	
 	        this.state.events = this.state.events.filter(function (event) {
 	            return event.EventId !== eventId;
 	        });
@@ -33813,22 +33819,27 @@
 	    },
 	
 	    renderNewEvents: function renderNewEvents() {
-	        var renderedEvents = (0, _jquery2.default)(this.node).fullCalendar("clientEvents");
+	        var renderedEvents = this.getRenderedEvents();
+	        var unRenderedEvents = this.filterMatchingEvents(this.fcEvents, renderedEvents);
+	        this.renderEvents(unRenderedEvents);
+	    },
 	
-	        for (var i = 0; i < this.fcEvents.length; i++) {
-	            var isRendered = false;
+	    getRenderedEvents: function getRenderedEvents() {
+	        return (0, _jquery2.default)(this.node).fullCalendar("clientEvents");
+	    },
 	
-	            for (var j = 0; j < renderedEvents.length; j++) {
+	    filterMatchingEvents: function filterMatchingEvents(sourceFcEvents, comparisonFcEvents) {
+	        return sourceFcEvents.filter(function (sourceEvent) {
+	            var matches = comparisonFcEvents.filter(function (comparisonEvent) {
+	                return sourceEvent.id === comparisonEvent.id;
+	            });
+	            return matches.length === 0;
+	        });
+	    },
 	
-	                if (this.fcEvents[i].id === renderedEvents[j].id) {
-	                    isRendered = true;
-	                    break;
-	                }
-	            }
-	
-	            if (!isRendered) {
-	                (0, _jquery2.default)(this.node).fullCalendar("renderEvent", this.fcEvents[i], true);
-	            }
+	    renderEvents: function renderEvents(fcEvents) {
+	        for (var i = 0; i < fcEvents.length; i++) {
+	            (0, _jquery2.default)(this.node).fullCalendar("renderEvent", fcEvents[i], true);
 	        }
 	    },
 	
