@@ -22284,6 +22284,7 @@
 	    applyViewData: function applyViewData(data) {
 	        this.state.currentUserId = data.CurrentUserId;
 	        this.state.users = data.Users;
+	        this.state.events = data.Events;
 	        this.onSetMenuPanel(Constants.Panel.Menu.ACCOUNT);
 	        this.onSetMainPanel(Constants.Panel.Main.USER_DETAILS);
 	        this.triggerStore();
@@ -32428,23 +32429,15 @@
 	
 	exports.default = {
 	    onAddEventForCurrentUser: function onAddEventForCurrentUser(event) {
-	        var postData = {
-	            UserId: this.state.currentUserId,
-	            Title: event.title,
-	            StartTime: event.start,
-	            EndTime: event.EndTime
-	        };
-	
-	        _jquery2.default.post("Event/AddEvent", postData).done(function (addedEvent) {
+	        _jquery2.default.post("Event/AddEvent", event).done(function (addedEvent) {
 	            this.state.events.push(addedEvent);
-	            console.log(addedEvent);
 	            this.triggerStore();
-	        });
+	        }.bind(this));
 	    },
 	
 	    onRemoveEventForCurrentUser: function onRemoveEventForCurrentUser(eventId) {
 	        this.state.events = this.state.events.filter(function (event) {
-	            return event.id !== eventId;
+	            return event.EventId !== eventId;
 	        });
 	        this.triggerStore();
 	    }
@@ -33736,6 +33729,12 @@
 	        events: _react2.default.PropTypes.array.isRequired
 	    },
 	
+	    fcEvents: [],
+	
+	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	        this.setFcEvents(newProps.events);
+	    },
+	
 	    componentDidMount: function componentDidMount() {
 	        this.node = _reactDom2.default.findDOMNode(this);
 	        var self = this;
@@ -33760,7 +33759,7 @@
 	                }
 	            },
 	
-	            events: self.props.events,
+	            events: self.fcEvents,
 	
 	            eventRender: function eventRender(event, element) {
 	                self.styleEvent(event, element);
@@ -33768,11 +33767,29 @@
 	        });
 	    },
 	
+	    componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	        this.removeMissingEvents();
+	        this.renderNewEvents();
+	    },
+	
+	    setFcEvents: function setFcEvents(events) {
+	        this.fcEvents = events.map(function (event) {
+	            return {
+	                id: event.EventId,
+	                userId: event.UserId,
+	                title: event.Title,
+	                start: event.StartTime,
+	                end: event.EndTime
+	            };
+	        });
+	    },
+	
 	    addEvent: function addEvent(start, end) {
 	        var event = {
-	            title: '',
-	            start: start.toISOString(),
-	            end: end.toISOString()
+	            Title: '',
+	            UserId: this.props.currentUserId,
+	            StartTime: start.toISOString(),
+	            EndTime: end.toISOString()
 	        };
 	        _Actions2.default.addEventForCurrentUser(event);
 	    },
@@ -33781,16 +33798,12 @@
 	        _Actions2.default.removeEventForCurrentUser(eventId);
 	    },
 	
-	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	        this.removeMissingEvents(newProps.events);
-	        this.renderNewEvents(newProps.events);
-	    },
-	
-	    removeMissingEvents: function removeMissingEvents(events) {
+	    removeMissingEvents: function removeMissingEvents() {
+	        var fcEvents = this.fcEvents;
 	        (0, _jquery2.default)(this.node).fullCalendar("removeEvents", function (renderedEvent) {
 	
-	            for (var i = 0; i < events.length; i++) {
-	                if (renderedEvent.id === events[i].id) {
+	            for (var i = 0; i < fcEvents.length; i++) {
+	                if (renderedEvent.id === fcEvents[i].id) {
 	                    return false;
 	                }
 	            }
@@ -33799,22 +33812,22 @@
 	        });
 	    },
 	
-	    renderNewEvents: function renderNewEvents(events) {
+	    renderNewEvents: function renderNewEvents() {
 	        var renderedEvents = (0, _jquery2.default)(this.node).fullCalendar("clientEvents");
 	
-	        for (var i = 0; i < events.length; i++) {
+	        for (var i = 0; i < this.fcEvents.length; i++) {
 	            var isRendered = false;
 	
 	            for (var j = 0; j < renderedEvents.length; j++) {
 	
-	                if (events[i].id === renderedEvents[j].id) {
+	                if (this.fcEvents[i].id === renderedEvents[j].id) {
 	                    isRendered = true;
 	                    break;
 	                }
 	            }
 	
 	            if (!isRendered) {
-	                (0, _jquery2.default)(this.node).fullCalendar("renderEvent", events[i], true);
+	                (0, _jquery2.default)(this.node).fullCalendar("renderEvent", this.fcEvents[i], true);
 	            }
 	        }
 	    },

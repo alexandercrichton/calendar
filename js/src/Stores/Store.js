@@ -73,6 +73,7 @@ let Store = $.extend(
         applyViewData: function (data) {
             this.state.currentUserId = data.CurrentUserId;
             this.state.users = data.Users;
+            this.state.events = data.Events;
             this.onSetMenuPanel(Constants.Panel.Menu.ACCOUNT);
             this.onSetMainPanel(Constants.Panel.Main.USER_DETAILS);
             this.triggerStore();

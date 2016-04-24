@@ -12,8 +12,8 @@ namespace MyCalendar.Models.Events
             EventId = evnt.EventId;
             UserId = evnt.UserId;
             Title = evnt.Title;
-            StartTime = evnt.StartTime.ToString();
-            EndTime = evnt.EndTime.ToString();
+            StartTime = evnt.StartTime?.ToString("yyyy-MM-dd");
+            EndTime = evnt.EndTime?.ToString("yyyy-MM-dd");
         }
 
         public int? EventId { get; set; }

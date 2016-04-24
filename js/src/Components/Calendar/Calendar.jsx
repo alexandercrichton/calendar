@@ -12,6 +12,12 @@ export default React.createClass({
         events: React.PropTypes.array.isRequired
     },
 
+    fcEvents: [],
+
+    componentWillReceiveProps: function (newProps) {
+        this.setFcEvents(newProps.events)
+    },
+
     componentDidMount: function () {
         this.node = ReactDOM.findDOMNode(this);
         var self = this;
@@ -36,7 +42,7 @@ export default React.createClass({
                 }
             },
 
-            events: self.props.events,
+            events: self.fcEvents,
 
             eventRender: function (event, element) {
                 self.styleEvent(event, element);
@@ -44,11 +50,29 @@ export default React.createClass({
         });
     },
 
+    componentDidUpdate: function (prevProps, prevState) {
+        this.removeMissingEvents();
+        this.renderNewEvents();
+    },
+
+    setFcEvents: function (events) {
+        this.fcEvents = events.map((event) => {
+            return {
+                id: event.EventId,
+                userId: event.UserId,
+                title: event.Title,
+                start: event.StartTime,
+                end: event.EndTime
+            };
+        });
+    },
+
     addEvent: function (start, end) {
         var event = {
-            title: '',
-            start: start.toISOString(),
-            end: end.toISOString()
+            Title: '',
+            UserId: this.props.currentUserId,
+            StartTime: start.toISOString(),
+            EndTime: end.toISOString()
         };
         Actions.addEventForCurrentUser(event);
     },
@@ -57,16 +81,12 @@ export default React.createClass({
         Actions.removeEventForCurrentUser(eventId);
     },
 
-    componentWillReceiveProps: function (newProps) {
-        this.removeMissingEvents(newProps.events);
-        this.renderNewEvents(newProps.events);
-    },
-
-    removeMissingEvents: function (events) {
+    removeMissingEvents: function () {
+        const fcEvents = this.fcEvents
         $(this.node).fullCalendar("removeEvents", function (renderedEvent) {
 
-            for (var i = 0; i < events.length; i++) {
-                if (renderedEvent.id === events[i].id) {
+            for (var i = 0; i < fcEvents.length; i++) {
+                if (renderedEvent.id === fcEvents[i].id) {
                     return false;
                 }
             }
@@ -75,22 +95,22 @@ export default React.createClass({
         });
     },
 
-    renderNewEvents: function (events) {
+    renderNewEvents: function () {
         var renderedEvents = $(this.node).fullCalendar("clientEvents");
 
-        for (var i = 0; i < events.length; i++) {
+        for (var i = 0; i < this.fcEvents.length; i++) {
             var isRendered = false;
 
             for (var j = 0; j < renderedEvents.length; j++) {
 
-                if (events[i].id === renderedEvents[j].id) {
+                if (this.fcEvents[i].id === renderedEvents[j].id) {
                     isRendered = true;
                     break;
                 }
             }
 
             if (!isRendered) {
-                $(this.node).fullCalendar("renderEvent", events[i], true);
+                $(this.node).fullCalendar("renderEvent", this.fcEvents[i], true);
             }
         }
     },
