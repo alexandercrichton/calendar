@@ -18,6 +18,7 @@ namespace MyCalendar.Infrastructure.Model
         public int? ToUserId { get; set; }
 
         public virtual User FromUser { get; set; }
+
         public virtual User ToUser { get; set; }
     }
 }

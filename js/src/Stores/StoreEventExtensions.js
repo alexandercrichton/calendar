@@ -6,7 +6,8 @@ export default {
     onAddEventForCurrentUser: function (event) {
         $.post("Event/AddEvent", event)
             .done(function (addedEvent) {
-                this.state.events.push(addedEvent);
+                const user = this.getUserById(event.UserId);
+                user.Events.push(addedEvent);
                 this.triggerStore();
             }.bind(this));
     },
@@ -18,9 +19,11 @@ export default {
 
         $.post("Event/RemoveEvent", postData);
 
-        this.state.events = this.state.events.filter((event) => {
+        const user = this.getUserById(this.state.currentUserId);
+        user.Events = user.Events.filter((event) => {
             return event.EventId !== eventId;
         });
+        
         this.triggerStore();  
     }
 };

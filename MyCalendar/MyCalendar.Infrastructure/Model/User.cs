@@ -11,7 +11,10 @@ namespace MyCalendar.Infrastructure.Model
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public virtual ICollection<UserLink> UserLinks { get; set; }
+        public virtual ICollection<UserLink> UserLinksTo { get; set; }
+
+        public virtual ICollection<UserLink> UserLinksFrom { get; set; }
+
         public virtual ICollection<Event> Events { get; set; }
     }
 }

@@ -22230,6 +22230,8 @@
 	    listenables: [_Actions2.default],
 	
 	    init: function init() {
+	        var _this = this;
+	
 	        this.state = {
 	            ui: {
 	                menuPanel: Constants.Panel.Menu.ACCOUNT,
@@ -22256,16 +22258,23 @@
 	
 	            events: [],
 	
-	            getEventsForCurrentUser: function () {
-	                return this.state.events.filter(function (event) {
-	                    return event.UserId === this.state.currentUserId;
-	                }.bind(this));
-	            }.bind(this),
+	            getEventsForCurrentUser: function getEventsForCurrentUser() {
+	                var user = _this.getUserById(_this.state.currentUserId);
+	                return user.Events;
+	            },
 	
 	            getCombinedEventsWithSelectedUser: function () {
-	                return this.state.events.filter(function (event) {
-	                    return event.UserId === this.state.currentUserId || event.UserId === this.state.currentSelectedUserId;
-	                }.bind(this));
+	                var _this2 = this;
+	
+	                var users = this.state.users.filter(function (user) {
+	                    return user.UserId === _this2.state.currentUserId || user.UserId === _this2.state.currentSelectedUserId;
+	                });
+	
+	                var eventLists = users.map(function (user) {
+	                    return user.Events;
+	                });
+	
+	                return [].concat.apply([], eventLists);
 	            }.bind(this)
 	        };
 	    },
@@ -22284,7 +22293,6 @@
 	    applyViewData: function applyViewData(data) {
 	        this.state.currentUserId = data.CurrentUserId;
 	        this.state.users = data.Users;
-	        this.state.events = data.Events;
 	        this.onSetMenuPanel(Constants.Panel.Menu.ACCOUNT);
 	        this.onSetMainPanel(Constants.Panel.Main.USER_DETAILS);
 	        this.triggerStore();
@@ -32430,7 +32438,8 @@
 	exports.default = {
 	    onAddEventForCurrentUser: function onAddEventForCurrentUser(event) {
 	        _jquery2.default.post("Event/AddEvent", event).done(function (addedEvent) {
-	            this.state.events.push(addedEvent);
+	            var user = this.getUserById(event.UserId);
+	            user.Events.push(addedEvent);
 	            this.triggerStore();
 	        }.bind(this));
 	    },
@@ -32442,9 +32451,11 @@
 	
 	        _jquery2.default.post("Event/RemoveEvent", postData);
 	
-	        this.state.events = this.state.events.filter(function (event) {
+	        var user = this.getUserById(this.state.currentUserId);
+	        user.Events = user.Events.filter(function (event) {
 	            return event.EventId !== eventId;
 	        });
+	
 	        this.triggerStore();
 	    }
 	};

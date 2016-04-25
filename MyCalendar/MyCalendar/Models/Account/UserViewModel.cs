@@ -23,6 +23,6 @@ namespace MyCalendar.Models.Account
         public string Name { get; set; }
         public string Email { get; set; }
 
-        public List<EventViewModel> Events { get; set; }
+        public List<EventViewModel> Events { get; set; } = new List<EventViewModel>();
     }
 }

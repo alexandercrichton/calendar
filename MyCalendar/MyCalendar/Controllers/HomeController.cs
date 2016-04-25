@@ -18,15 +18,19 @@ namespace MyCalendar.Controllers
         {
             using (var db = new MyCalendarDbContext())
             {
-                var data = db.Users
+                var users = db.Users
                     .Where(u => u.UserId == userId
-                        || u.UserLinks
-                            .Any(l => l.FromUserId == userId && l.ToUserId == u.UserId))
+                        || u.UserLinksTo
+                            .Any(l => l.FromUserId == userId))
+                    .ToList();
+
+                var data = users
                     .Select(u => new
                     {
                         User = u,
                         Events = u.Events
-                    });
+                    })
+                    .ToList();
 
                 var viewModels = data
                     .Select(d => new UserViewModel(d.User, d.Events))

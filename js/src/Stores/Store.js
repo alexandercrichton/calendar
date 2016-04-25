@@ -43,17 +43,22 @@ let Store = $.extend(
 
                 events: [],
 
-                getEventsForCurrentUser: function () {
-                    return this.state.events.filter(function (event) {
-                        return (event.UserId === this.state.currentUserId);
-                    }.bind(this));
-                }.bind(this),
+                getEventsForCurrentUser: () => {
+                    const user = this.getUserById(this.state.currentUserId);
+                    return user.Events;
+                },
 
                 getCombinedEventsWithSelectedUser: function () {
-                    return this.state.events.filter(function (event) {
-                        return (event.UserId === this.state.currentUserId
-                            || event.UserId === this.state.currentSelectedUserId);
-                    }.bind(this));
+                    const users = this.state.users.filter((user) => {
+                        return user.UserId === this.state.currentUserId
+                            || user.UserId === this.state.currentSelectedUserId;
+                    });
+
+                    const eventLists = users.map((user) => {
+                        return user.Events;
+                    });
+
+                    return [].concat.apply([], eventLists);
                 }.bind(this)
             };
         },
@@ -73,7 +78,6 @@ let Store = $.extend(
         applyViewData: function (data) {
             this.state.currentUserId = data.CurrentUserId;
             this.state.users = data.Users;
-            this.state.events = data.Events;
             this.onSetMenuPanel(Constants.Panel.Menu.ACCOUNT);
             this.onSetMainPanel(Constants.Panel.Main.USER_DETAILS);
             this.triggerStore();

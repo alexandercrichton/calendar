@@ -52,7 +52,7 @@ namespace MyCalendar.Controllers
             }
         }
 
-        public StrongJsonResult<UserDetailsModel> LinkUserToUserByEmail(int? fromUserId, string toEmail)
+        public StrongJsonResult<UserViewModel> LinkUserToUserByEmail(int? fromUserId, string toEmail)
         {
             using (var db = new MyCalendarDbContext())
             {
@@ -69,7 +69,7 @@ namespace MyCalendar.Controllers
                             link = new UserLink(fromUserId, toUser.UserId);
                             db.UserLinks.Add(link);
                             db.SaveChanges();
-                            return StrongJsonResult.From(new UserDetailsModel(toUser));
+                            return StrongJsonResult.From(new UserViewModel(toUser, toUser.Events));
                         }
                     }
                 }
